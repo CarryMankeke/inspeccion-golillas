@@ -1,13 +1,13 @@
 calibración 273 buenas; prueba 103 malas + 88 buenas
-/home/camilo/proyectos/inspeccion-golillas/golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
+golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
   d = np.where(np.abs(den) > 1e-6, 0.5 * (mm - mp) / den, 0.0)
-/home/camilo/proyectos/inspeccion-golillas/golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
+golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
   d = np.where(np.abs(den) > 1e-6, 0.5 * (mm - mp) / den, 0.0)
-/home/camilo/proyectos/inspeccion-golillas/golillas/bordes.py:171: RuntimeWarning: invalid value encountered in divide
+golillas/bordes.py:171: RuntimeWarning: invalid value encountered in divide
   d = np.where(np.abs(den) > 1e-6, 0.5 * (mm - mp) / den, 0.0)
-/home/camilo/proyectos/inspeccion-golillas/golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
+golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
   d = np.where(np.abs(den) > 1e-6, 0.5 * (mm - mp) / den, 0.0)
-/home/camilo/proyectos/inspeccion-golillas/golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
+golillas/bordes.py:171: RuntimeWarning: divide by zero encountered in divide
   d = np.where(np.abs(den) > 1e-6, 0.5 * (mm - mp) / den, 0.0)
 rasgos listos en 22 s
 P0: 85 de 273 buenas de calibración sin medir; 79 fallas en prueba
