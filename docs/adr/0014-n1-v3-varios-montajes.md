@@ -52,6 +52,8 @@ Si ninguno cumple 1 y 2, gana el de mayor detección media entre los que cumplen
 - **Prueba de humo:** antes de la corrida completa, e11 corrió con muestras chicas (hasta 60 fotos por grupo; `--humo`) para probar el código. Sirvió de control: PatchCore layer2+3 con recorte fijo repitió el 4/6 y 1/15 de e09 en las fotos propias. Después de verla no se cambió ni el código ni el criterio.
 
 ## Set ciego nuevo: 65 fotos propias
+> **Cambio del 27 nov 2026 (ADR 0015):** las buenas de calibración suben de 15 a 50, para que el umbral conformal funcione también en el montaje propio. Las 25 buenas y 25 malas de prueba no cambian.
+
 - **Montaje** del [ADR 0001](0001-n0-objetivo.md): golilla oscura sobre papel claro, la cámara a la altura de siempre, y la posición y el giro al azar. Todas las fotos se toman el mismo día.
 - **15 buenas para calibrar**, como las piezas patrón al empezar un turno. No se cuentan en el resultado.
 - **25 buenas y 25 malas de prueba**: 50 golillas distintas, con una foto cada una. Las malas son 5 de cada tipo: cortadas (corte radial), dobladas o deformadas, con muesca en un borde, de otra medida y con un rayón de superficie. Los rayones no cambian la forma: están para medir ese límite, no para que la clásica gane.

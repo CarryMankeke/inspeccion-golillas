@@ -142,7 +142,7 @@ Lo que hoy limita los resultados:
 
 Próximos pasos:
 1. ~~Ajuste justo de las redes (e09)~~ y ~~prueba ciega con datos públicos (e10)~~: hechos ([ADR 0004](docs/adr/0004-n1-enfoque.md), [ADR 0013](docs/adr/0013-datos-publicos.md)).
-2. **Versión 3: reabrir el N1.** PatchCore como candidato principal, y una clásica con rasgos de tamaño. Se elige con varios montajes y se prueba una sola vez con 65 fotos propias nuevas (15 calibran; 25 buenas y 25 malas de prueba). El criterio quedó fijado antes de correr ([ADR 0014](docs/adr/0014-n1-v3-varios-montajes.md)). Roboflow MassMEP no sirve como prueba: sus 187 fotos son todas de golillas malas.
+2. **Versiones 3 y 4 del N1.** En la v3 (e11) ningún candidato cumplió el criterio: PatchCore ordena muy bien, pero su umbral es demasiado prudente, y la clásica no se traslada a otros montajes ([ADR 0014](docs/adr/0014-n1-v3-varios-montajes.md)). La v4 cambia el umbral por uno conformal, con una tasa de falsas alarmas fijada, y usa una regla de respaldo que respeta las falsas alarmas. Las 10 opciones revisadas, con sus fuentes, están en el [ADR 0015](docs/adr/0015-n1-v4-opciones.md). La prueba ciega usará 100 fotos propias nuevas.
 3. Ajustar los hiperparámetros de la cadena clásica y probar de punta a punta las 2 mejores técnicas de cada proceso.
 4. Enfoques N1 que faltan: plantilla dorada y desenrollado polar del anillo.
 5. Diámetro en mm con su incertidumbre: calibrar píxel → mm y medir la repetibilidad.
