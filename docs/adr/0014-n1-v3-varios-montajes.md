@@ -12,14 +12,13 @@ Hay que volver a elegir el enfoque, pero sin hacer trampa: el set de prueba de E
 |---|---|---|---|
 | 21 fotos propias | 15 | 6 | **Elegir**: prueba A (dejando una fuera) y prueba R (con giros), como en e06 y e09 |
 | Sintéticas de validación de e09 (semilla 9) | 300 | 300 (50 de cada uno de los 6 defectos) | **Elegir** |
-| Kaggle «Simplified washers» (dibujos) | 1.000 calibran; 100 de prueba | 100 | **Elegir**: es otro montaje con malas y nunca se ha usado. Falta bajarlo (OK de Camilo) |
+| Kaggle «Simplified washers» (dibujos) | 1.000 calibran; 100 de prueba | 100 | **Elegir**: es otro montaje con malas y nunca se ha usado. Bajado el 27 nov 2026 |
 | Edge Impulse, 273 buenas de entrenamiento | 273 | 0 | **Elegir, solo falsas alarmas**: cada buena se compara con las demás (dejando una fuera) |
 | Edge Impulse, 191 de prueba | 88 | 103 | **No elige.** Ya se vio en e10. Se vuelve a correr al final y se informa marcado «no ciego» |
 | Roboflow MassMEP | 0 | 187 | No sirve: no tiene buenas ([ADR 0013](0013-datos-publicos.md)) |
 | CSEM-MISD | 0 | 50 | No sirve: no tiene buenas |
 | **Set ciego nuevo: fotos propias** | 25 (+15 que calibran) | 25 | **Prueba ciega**: se corre una sola vez, al final |
 
-Si Kaggle no se baja, se elige con las otras tres filas de «Elegir» y se dice en el resultado.
 
 ## Candidatos (configuraciones fijas, sin búsqueda)
 1. **PatchCore**, con el coreset del 1 % de e09. Son 4 variantes:

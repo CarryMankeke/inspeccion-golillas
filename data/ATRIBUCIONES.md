@@ -6,7 +6,7 @@
 | `data/publico/edge_impulse_flat_washers/` | Edge Impulse, «Visual Anomaly Detection - Flat washers» (2024), https://studio.edgeimpulse.com/public/497653/latest | BSD 3-Clause Clear | No: se baja con `python scripts/descargar_datos.py edge_impulse_flat_washers` |
 | `data/publico/csem_misd_washers/` | Honzátko et al., CSEM-MISD (2021), https://zenodo.org/records/5513769 | CC BY-NC-ND 4.0: se usa sin modificar ni redistribuir | No: `python scripts/descargar_datos.py csem_misd_washers` |
 | `data/publico/roboflow_massmep_washers/` | MassMEP, «Washer Defects» v1 en Roboflow Universe, https://universe.roboflow.com/massmep/washer-defects-3usoj (exportado en COCO el 27 nov 2026) | CC BY 4.0 | No: pide cuenta; se exporta a mano y se comprueba con `python scripts/descargar_datos.py --verificar roboflow_massmep_washers` |
-| Kaggle «Simplified washers» (thibdx) | https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection | CC BY-SA 4.0 | No: pide cuenta, se baja a mano |
+| `data/publico/kaggle_simplified_washers/` | Thibdx, «Simplified washers for anomaly detection», versión 5 (2022), https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection | CC BY-SA 4.0 | No: pide cuenta; se baja con el conector o la CLI de Kaggle y se comprueba con `python scripts/descargar_datos.py --verificar kaggle_simplified_washers` |
 
 ## Aviso de Edge Impulse
 
@@ -38,6 +38,10 @@ NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
 ## Aviso de Roboflow MassMEP
 
 «Washer Defects», de MassMEP, en Roboflow Universe (https://universe.roboflow.com/massmep/washer-defects-3usoj), con licencia CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Ninguna de sus imágenes está en el repo.
+
+## Aviso de Kaggle «Simplified washers»
+
+«Simplified washers for anomaly detection», de Thibdx, en Kaggle (https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection), con licencia CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/). Son dibujos hechos en Affinity Publisher, no fotos. Ninguna de sus imágenes está en el repo; si alguna figura llega a mostrar una, esa figura queda bajo CC BY-SA 4.0.
 
 ## Cita de Edge Impulse
 

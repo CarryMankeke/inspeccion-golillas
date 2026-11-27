@@ -9,10 +9,11 @@ está fijada en FUENTES, la imprime para fijarla en el commit siguiente: desde a
 cualquier cambio del archivo en el servidor detiene la descarga. Las licencias y
 atribuciones están en data/ATRIBUCIONES.md.
 
-Roboflow pide cuenta: se baja a mano desde su página (formato COCO) y se copia a
-data/publico/<nombre>/. Para esas fuentes, `--verificar` calcula la huella del árbol (SHA-256
-de la lista ordenada «sha256  ./ruta» de cada archivo, como `sha256sum`) y la compara con la
-fijada: `python scripts/descargar_datos.py --verificar roboflow_massmep_washers`.
+Roboflow y Kaggle piden cuenta: se bajan a mano (Roboflow en formato COCO; Kaggle con su
+conector o su CLI) y se descomprimen en data/publico/<nombre>/. Para esas fuentes,
+`--verificar` calcula la huella del árbol (SHA-256 de la lista ordenada «sha256  ./ruta» de
+cada archivo, como `sha256sum`) y la compara con la fijada:
+      python scripts/descargar_datos.py --verificar roboflow_massmep_washers kaggle_simplified_washers
 """
 
 from __future__ import annotations
@@ -53,6 +54,16 @@ FUENTES = {
         licencia="CC BY 4.0",
         fuente="https://universe.roboflow.com/massmep/washer-defects-3usoj",
     ),
+    "kaggle_simplified_washers": dict(
+        manual=True,  # pide cuenta: se baja con el conector o la CLI de Kaggle (27 nov 2026, versión 5)
+        url="https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection",
+        zip_bytes=31_801_003,
+        zip_sha256="83297b801eb3e5dc5fd970a3dbba55dd4ecb9d5c0dae1de904148a0206e5afbd",
+        archivos=2403,
+        arbol_sha256="c3311c1a11395eea10b6cf60e993952fedf8481ce3ba089d85a641361e280cc6",  # fijada el 27 nov 2026
+        licencia="CC BY-SA 4.0",
+        fuente="https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection",
+    ),
 }
 
 
@@ -75,7 +86,7 @@ def huella_arbol(carpeta: Path) -> tuple[str, int]:
 def verificar(nombre: str) -> None:
     f, carpeta = FUENTES[nombre], DESTINO / nombre
     if not carpeta.exists():
-        sys.exit(f"{nombre}: no está en {carpeta}. Bájalo a mano desde {f['url']} (formato COCO).")
+        sys.exit(f"{nombre}: no está en {carpeta}. Bájalo a mano desde {f['url']}.")
     h, n = huella_arbol(carpeta)
     if n != f["archivos"] or h != f["arbol_sha256"]:
         sys.exit(f"{nombre}: {n} archivos, huella {h}. No calza con la fijada; revisa la copia.")
