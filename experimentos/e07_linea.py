@@ -20,7 +20,7 @@ import cv2
 import imageio.v2 as imageio
 import numpy as np
 import pandas as pd
-from comun import AQUA, AZUL, NARANJA, RESULTADOS, decidir, estilo, guardar, mapa
+from comun import AQUA, AZUL, FIGURAS, NARANJA, RESULTADOS, decidir, estilo, guardar, mapa
 from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
@@ -75,7 +75,8 @@ def main():
         V.to_csv(csv, index=False)
     malas, buenas = V[V.mala], V[~V.mala]
     print(f"visión en variantes rotadas (sin ver la foto): malas {malas.dice_mala.mean():.1%}, "
-          f"buenas retiradas {buenas.dice_mala.mean():.1%}, ms mediana {V.ms.median():.1f}, p95 {V.ms.quantile(.95):.1f}")
+          f"buenas retiradas {buenas.dice_mala.mean():.1%}, ms mediana {V.ms.median():.1f}, "
+          f"p95 {V.ms.quantile(.95):.1f}")
 
     def vision(p, rng):
         fila = (malas if p.mala else buenas).iloc[int(rng.integers(len(malas if p.mala else buenas)))]
@@ -208,7 +209,7 @@ def animar(estrategia, vision, v0=400, segundos=8.0, fps=20):
         dw.text((8, H - 20), "gris = sin revisar · verde = aprobada · naranja = retirar · muesca = mala de verdad",
                 font=chica, fill=(82, 81, 78))
         cuadros.append(np.array(pil))
-    imageio.mimsave(RESULTADOS / "e07_linea.gif", cuadros, duration=1 / fps, loop=0)
+    imageio.mimsave(FIGURAS / "e07_linea.gif", cuadros, duration=1 / fps, loop=0)
     print("  → e07_linea.gif", len(cuadros), "cuadros")
 
 

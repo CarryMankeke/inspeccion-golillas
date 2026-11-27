@@ -19,6 +19,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from golillas.datos import RAIZ, RESULTADOS  # noqa: E402
 
 RESULTADOS.mkdir(exist_ok=True)
+FIGURAS = RAIZ / "docs" / "figuras"  # los gráficos viven junto a los ADR (vault de Obsidian y GitHub)
+FIGURAS.mkdir(parents=True, exist_ok=True)
 REFERENCIA = RAIZ / "data" / "real" / "referencia"
 
 # Paleta validada (dataviz, modo claro): azul = elegido / sintético, naranja = real, gris = resto
@@ -68,7 +70,7 @@ def barras_h(ax, nombres, series, etiquetas=None, colores=None, elegido=None, fm
 
 
 def guardar(fig, nombre):
-    fig.savefig(RESULTADOS / nombre)
+    fig.savefig(FIGURAS / nombre)
     plt.close(fig)
     print("  →", nombre)
 

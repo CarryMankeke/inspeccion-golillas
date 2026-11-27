@@ -2,13 +2,13 @@
 
 Cada píxel queda como golilla si la mayoría de 16 segmentaciones distintas lo marca
 (8 técnicas × 2 preprocesados). Después se revisa a ojo el mosaico
-`resultados/e00b_referencia_real.jpg`. Limitación: si la mayoría se equivoca igual,
+`docs/figuras/e00b_referencia_real.jpg`. Limitación: si la mayoría se equivoca igual,
 la referencia también; por eso la segmentación se mide además con sintéticas.
 """
 
 import cv2
 import numpy as np
-from comun import REFERENCIA, RESULTADOS, centro, recorte
+from comun import FIGURAS, REFERENCIA, centro, recorte
 
 from golillas.datos import cargar_reales
 from golillas.preproceso import preprocesar
@@ -38,7 +38,7 @@ def main():
         tiles.append(t)
     while len(tiles) % 7:
         tiles.append(np.zeros_like(tiles[0]))
-    cv2.imwrite(str(RESULTADOS / "e00b_referencia_real.jpg"),
+    cv2.imwrite(str(FIGURAS / "e00b_referencia_real.jpg"),
                 np.vstack([np.hstack(tiles[i : i + 7]) for i in range(0, len(tiles), 7)]))
     print("referencias:", len(list(REFERENCIA.glob("*.png"))))
 

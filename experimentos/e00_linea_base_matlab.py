@@ -277,7 +277,8 @@ def main():
     # por qué se bota cada sintética buena (falsas alarmas) y qué defectos se escapan
     sb = si[si.clase == "buena"]
     motivo = pd.Series(np.where(retirar["sint"][si.clase.eq("buena").values], reglas(sb), "aprobada")).value_counts()
-    por_def = si[si.clase == "mala"].assign(ret=retirar["sint"][si.clase.eq("mala").values]).groupby("defecto").ret.mean()
+    malas_s = si[si.clase == "mala"].assign(ret=retirar["sint"][si.clase.eq("mala").values])
+    por_def = malas_s.groupby("defecto").ret.mean()
     motivo.to_csv(RESULTADOS / "e00_matlab_motivos.csv")
     por_def.to_csv(RESULTADOS / "e00_matlab_defectos.csv")
 

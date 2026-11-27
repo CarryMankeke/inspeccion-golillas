@@ -1,0 +1,22 @@
+name: pruebas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar (sin PyTorch: el CI no corre las redes)
+        run: pip install -e ".[dev]"
+      - name: Estilo (ruff)
+        run: ruff check .
+      - name: Pruebas (pytest)
+        run: pytest -q

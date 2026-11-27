@@ -22,8 +22,19 @@ import time
 import cv2
 import numpy as np
 import pandas as pd
-from comun import (RESULTADOS, SECUENCIAL, barras_h, centro, decidir, estilo, guardar, mapa,
-                   n_agujeros, recorte, referencia)
+from comun import (
+    RESULTADOS,
+    SECUENCIAL,
+    barras_h,
+    centro,
+    decidir,
+    estilo,
+    guardar,
+    mapa,
+    n_agujeros,
+    recorte,
+    referencia,
+)
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 

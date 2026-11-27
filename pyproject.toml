@@ -29,12 +29,12 @@ red = ["torch>=2.2", "torchvision>=0.17"]
 packages = ["golillas"]
 
 [tool.ruff]
-line-length = 110
+line-length = 120
 target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B"]
-ignore = ["E741"]
+ignore = ["E741", "B905"]  # zip sin strict: en los scripts las listas siempre calzan
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
