@@ -16,7 +16,7 @@ Una cámara mira cada golilla que pasa por una cinta. Si tiene un defecto, un so
 | Tiempo por golilla en un PC sin tarjeta gráfica | **≈ 36 ms** |
 | Línea simulada con encoder | **100 % de las malas fuera de la cinta hasta ≈ 1.000 piezas por minuto** |
 
-Son pocas fotos reales (21), así que estos números dicen "ninguna falla en esta muestra", no "nunca falla". El detalle está en el [ADR 0001](docs/adr/0001-n0-objetivo.md).
+Las 21 fotos reales sirvieron para **elegir** técnicas y también para **informar** estos números: son una validación, no una prueba ciega. Con solo 6 malas, "6 de 6" significa "ninguna falla en esta muestra" (intervalo de confianza al 95 %: 54–100 %), no "nunca falla". El detalle está en el [ADR 0001](docs/adr/0001-n0-objetivo.md).
 
 ## Cómo funciona
 
@@ -122,11 +122,23 @@ Cada script reutiliza su CSV si existe; con `--recalcular` vuelve a medir desde 
 | P6 Decisión | Mahalanobis con umbral de Hotelling (una clase) | 6/6 y 0/15 dejando una fuera |
 | P7 Línea | encoder de 0,1 mm | 100 % retiradas hasta 1.500 mm/s |
 
-### Límites conocidos
-- 21 fotos reales: los intervalos de confianza son anchos (detección 54–100 % al 95 %).
-- La línea es simulada; la oscilación de la cinta, el resbalamiento y los retardos son supuestos.
+### Limitaciones y próximos pasos
+Lo que hoy limita los resultados:
+- **Pocas fotos reales y sin prueba ciega.** Las 21 fotos se usaron para elegir y para informar (6 malas; IC95 54–100 %).
+- **Redes sin ajuste justo.** En el N1, las redes corrieron con hiperparámetros fijos y entrenadas con 20 fotos; "la clásica gana" vale en ese marco ([ADR 0004](docs/adr/0004-n1-enfoque.md)).
+- **Una configuración por técnica.** Cada técnica de la cadena clásica corrió con una sola configuración, y se eligió proceso a proceso, sin probar de punta a punta las 2 mejores de cada paso.
+- La línea es simulada: la oscilación de la cinta, el resbalamiento y los retardos son supuestos.
 - El generador sintético no imita bien la textura del metal ([ADR 0005](docs/adr/0005-datos-sinteticos.md)).
 - El port de las reglas MATLAB no se verificó contra MATLAB.
+
+Próximos pasos (versión 2):
+1. Sumar un dataset público de golillas con licencia abierta. Su parte real queda como prueba ciega, sin usarla para elegir nada.
+2. Ajuste justo de las redes (e09): preentrenar con sintéticas, buscar hiperparámetros en validación sintética, PatchCore con coreset, e informar el AUC.
+3. Ajustar los hiperparámetros de la cadena clásica y probar de punta a punta las 2 mejores técnicas de cada proceso.
+4. Enfoques N1 que faltan: plantilla dorada y desenrollado polar del anillo.
+5. Diámetro en mm con su incertidumbre: calibrar píxel → mm y medir la repetibilidad.
+6. Robustez a la luz, al desenfoque y a la altura de la cámara, y latencia en Raspberry Pi o Jetson.
+7. Un set nuevo de 30–50 fotos reales tomado aparte, como prueba ciega.
 
 ### Licencia
 MIT ([LICENSE](LICENSE)). Las 21 fotos reales vienen del proyecto MATLAB original.

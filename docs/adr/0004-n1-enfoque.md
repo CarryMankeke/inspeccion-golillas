@@ -1,6 +1,6 @@
 # ADR 0004 · N1: visión clásica o red neuronal
 
-**Estado:** aceptada · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Script:** `experimentos/e08_enfoques.py`
+**Estado:** aceptada, en revisión (falta el ajuste justo de las redes, e09) · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Script:** `experimentos/e08_enfoques.py`
 
 ## Contexto
 Hoy muchas inspecciones visuales se resuelven con redes neuronales. Antes de quedarse con la visión clásica había que medirla contra ellas con las mismas pruebas.
@@ -26,6 +26,9 @@ Primero, detectar el 100 % de las malas reales (prueba A dejando una fuera y pru
 
 ## Decisión
 **Visión clásica.** Es la única que detecta todas las malas reales. La red supervisada aprende con solo 5 malas por vuelta de la prueba A, muy pocas para una red. PatchCore dejó pasar 2 de 6; una explicación probable, **no verificada**, es que los defectos chicos se diluyen al reducir el recorte a 224 px.
+
+## Límites de esta comparación
+Las redes no tuvieron un ajuste justo: tasa de aprendizaje y épocas fijas, entrenadas con 20 fotos reales; PatchCore sin coreset y con un umbral simple (máximo + 2σ); y no se informó el AUC, solo un punto de operación. **"La clásica gana" vale en ese marco.** El experimento e09 repetirá la comparación preentrenando con sintéticas, buscando hiperparámetros en validación sintética (no en las reales), probando capas y coreset en PatchCore e informando el AUC. Si cambia el resultado, este ADR se reemplaza.
 
 ## Consecuencias
 - La cadena clásica explica sus decisiones ("borde del agujero dañado"); las redes no.

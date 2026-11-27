@@ -21,7 +21,7 @@ Detectar con una cámara las golillas defectuosas que pasan por una cinta transp
 | Tiempo por pieza en CPU | < 100 ms | **≈ 36 ms** |
 | Línea simulada | ≥ 99 % de malas marcadas retiradas, ≤ 1 % de buenas arrastradas | **100 % y 0 % hasta 1.500 mm/s** |
 
-Los intervalos son anchos porque 6 y 15 fotos son pocas: el resultado real es "ninguna falla en esta muestra", no "nunca falla".
+Los intervalos son anchos porque 6 y 15 fotos son pocas: el resultado real es "ninguna falla en esta muestra", no "nunca falla". Además, las 21 fotos reales sirvieron para elegir técnicas (por ejemplo, el modelo del proceso 6) y también para informar estos números. Son una **validación, no una prueba ciega**: hace falta un set real nuevo que no se use para decidir nada (ver "Limitaciones y próximos pasos" en el README).
 
 ## Consecuencias
 - Cada proceso (N3) se decide con una métrica y un criterio escritos en su script, y el resultado queda en `resultados/decisiones.json`.
