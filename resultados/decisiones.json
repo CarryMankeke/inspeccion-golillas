@@ -1,0 +1,53 @@
+{
+  "preproceso": {
+    "opcion": "fondo_div",
+    "criterio": "IoU medio sobre las 11 segmentaciones (promedio sintético y real)",
+    "iou_prom": 0.9455
+  },
+  "segmentacion": {
+    "opcion": "otsu",
+    "criterio": "mejor IoU (promedio sintético-real) con topología 100 % en buenas; empate <0,005 → la más rápida",
+    "iou_prom": 0.9754,
+    "ms": 4.1
+  },
+  "bordes": {
+    "opcion": "subpixel_grad",
+    "criterio": "menor (error de radio + dispersión de puntos) en sintéticas; empate <0,05 px → el más rápido",
+    "err_r_px": 0.093,
+    "disp_px": 0.155,
+    "ms": 10.17
+  },
+  "medicion": {
+    "opcion": "ransac",
+    "criterio": "menor promedio entre error en buenas y error con defecto (mediana, px); empate <0,05 → el más rápido",
+    "err_buenas_px": 0.133,
+    "err_defecto_px": 0.264
+  },
+  "rasgos": {
+    "opcion": "relleno_anillo,excentricidad,fourier_ext,desv_int_p95",
+    "criterio": "selección hacia adelante por AUC medio por defecto (sintéticas de entrenamiento)",
+    "auc_sint": 0.9983,
+    "auc_real": 1.0
+  },
+  "decision": {
+    "opcion": "mahalanobis_hotelling",
+    "criterio": "6/6 malas en LOO real y ≥99 % en giros; menos falsas alarmas (LOO + giros); empate → mejor margen sintético; una clase",
+    "k": null,
+    "loo_deteccion": "6/6 (IC95 54%–100%)",
+    "loo_falsas": "0/15 (IC95 0%–22%)",
+    "giros_deteccion": "42/42",
+    "giros_falsas": "0/105",
+    "sint_deteccion": 1.0,
+    "sint_falsas": 0.03
+  },
+  "linea": {
+    "opcion": "encoder",
+    "criterio": "la más simple con ≥99 % de malas marcadas retiradas y ≤1 % de buenas arrastradas en todas las velocidades que la visión alcanza (resbale 0–4 %)",
+    "velocidad_max_mm_s": 1500,
+    "cumple": {
+      "temporizador": false,
+      "encoder": true,
+      "encoder+sensor": true
+    }
+  }
+}

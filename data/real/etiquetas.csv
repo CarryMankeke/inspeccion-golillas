@@ -1,0 +1,22 @@
+archivo,clase,defecto,nombre_original
+buenas/b01.jpg,buena,ninguno,Golilla 1.jpg
+buenas/b02.jpg,buena,ninguno,Golilla 2.jpg
+buenas/b03.jpg,buena,ninguno,Golilla 3.jpg
+buenas/b04.jpg,buena,ninguno,Golilla 4.jpg
+buenas/b05.jpg,buena,ninguno,Golilla 5.jpg
+buenas/b06.jpg,buena,ninguno,Golilla 6.jpg
+buenas/b07.jpg,buena,ninguno,Golilla 7.jpg
+buenas/b08.jpg,buena,ninguno,Golilla 8.jpg
+buenas/b09.jpg,buena,ninguno,Golilla 9.jpg
+buenas/b10.jpg,buena,ninguno,Golilla 10.jpg
+buenas/b11.jpg,buena,ninguno,Golilla 11.jpg
+buenas/b12.jpg,buena,ninguno,Golilla 12.jpg
+buenas/b13.jpg,buena,ninguno,Golilla 13.jpg
+buenas/b14.jpg,buena,ninguno,Golilla 14.jpg
+buenas/b15.jpg,buena,ninguno,Golilla 15.jpg
+malas/m01.jpg,mala,deformada,Golilla anomaly  1.jpg
+malas/m02.jpg,mala,deformada,Golilla anomaly  2.jpg
+malas/m03.jpg,mala,deformada,Golilla anomaly  3.jpg
+malas/m04.jpg,mala,borde_interior,Golilla anomaly  4.jpg
+malas/m05.jpg,mala,corte_radial,Golilla anomaly 5.jpg
+malas/m06.jpg,mala,muesca_exterior,Golilla anomaly 6.jpg

@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+# caché de datos sintéticos (se regeneran con semilla fija)
+cache/
+# estado local de Obsidian (la config compartida sí va)
+docs/.obsidian/workspace*.json
+docs/.obsidian/cache
