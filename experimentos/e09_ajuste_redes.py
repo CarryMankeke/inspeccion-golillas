@@ -234,7 +234,7 @@ class PatchCore:
         self.banco = banco
         # umbral por LOO interno: cada buena contra el banco sin sus propios parches
         s = [self._puntaje(self.rasgos(xb[i : i + 1])[0], banco[dueno != i]) for i in range(len(xb))]
-        self.umbral, self.n_banco = float(max(s)), len(banco)
+        self.umbral, self.n_banco, self.loo = float(max(s)), len(banco), np.array(s)
         return self
 
     @staticmethod

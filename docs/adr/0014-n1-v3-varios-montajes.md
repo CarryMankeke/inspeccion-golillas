@@ -1,6 +1,6 @@
 # ADR 0014 · N1 v3: reabrir el enfoque con varios montajes
 
-**Estado:** propuesta, con el criterio fijado antes de correr · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Scripts:** `experimentos/e11_n1_v3.py` (elección) y `experimentos/e12_prueba_ciega_propia.py` (prueba ciega), aún por escribir
+**Estado:** propuesta, con el criterio fijado antes de correr · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Scripts:** `experimentos/e11_n1_v3.py` (elección) y `experimentos/e12_prueba_ciega_propia.py` (prueba ciega, por escribir)
 
 ## Contexto
 En el montaje propio, la visión clásica detecta las 6 malas reales y gana a las redes ([ADR 0004](0004-n1-enfoque.md)). En la prueba ciega con fotos de otro laboratorio (e10, [ADR 0013](0013-datos-publicos.md)) eso no se sostiene: la clásica detecta 31 % de las malas y PatchCore 67 % (AUC 0,75 contra 0,95). La clásica no mide tamaño y no ve cortes radiales finos.
@@ -40,6 +40,16 @@ Cada candidato se calibra con las buenas de cada montaje y se mide ahí mismo.
 4. **Empate** (≤ 2 puntos de diferencia): gana la más fácil de explicar (clásica, luego fusión, luego PatchCore). Si siguen empatadas, gana la más rápida en CPU.
 
 Si ninguno cumple 1 y 2, gana el de mayor detección media entre los que cumplen la latencia, y se informa que ninguno cumple. Los requisitos no se relajan.
+
+## Detalles de implementación (fijados antes de correr e11)
+- **Polaridad:** todas las fotos pasan por la regla P1 de e10, que no usa etiquetas. Los dibujos de Kaggle se usan tal cual, sin agrandar ni poner sobre un lienzo: en 40 buenas de calibración la cadena midió 40 de 40, con un radio de ≈ 53 px, parecido a las fotos propias (≈ 50 px).
+- **Radio del recorte proporcional:** el radio equivalente del relleno exterior que entrega la segmentación, √(área/π). Es más barato que el círculo de RANSAC y siempre existe. Si la segmentación no encuentra nada, el recorte vuelve a 160 px.
+- **Bancos de PatchCore:** con menos de 50 buenas se agregan las 8 simetrías (como e09); con 50 o más, sin giros (como e10). Las sintéticas calibran con sus 300 buenas de entrenamiento.
+- **Falsas alarmas en las 273 buenas de Edge Impulse:** la clásica se recalibra 273 veces, dejando una fuera cada vez. En PatchCore, cada buena se compara con el máximo de los puntajes de las otras; con ese umbral, la tasa da ≈ 1/273 por construcción. Se informa igual, pero solo pesa de verdad en la clásica.
+- **Orden de la elección:** primero se elige dentro de cada familia (clásica y PatchCore) con la misma regla. Con esas dos se arma la fusión, y al final se elige entre los 7 candidatos.
+- **Latencia:** se mide en la CPU de norea con una foto propia. PatchCore incluye la segmentación que ubica el recorte, y la fusión suma la cadena clásica y la red.
+- **Edge Impulse de prueba:** se corre después de guardar la elección, solo para informar, marcado «no ciego».
+- **Prueba de humo:** antes de la corrida completa, e11 corrió con muestras chicas (hasta 60 fotos por grupo; `--humo`) para probar el código. Sirvió de control: PatchCore layer2+3 con recorte fijo repitió el 4/6 y 1/15 de e09 en las fotos propias. Después de verla no se cambió ni el código ni el criterio.
 
 ## Set ciego nuevo: 65 fotos propias
 - **Montaje** del [ADR 0001](0001-n0-objetivo.md): golilla oscura sobre papel claro, la cámara a la altura de siempre, y la posición y el giro al azar. Todas las fotos se toman el mismo día.

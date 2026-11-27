@@ -100,3 +100,34 @@ def calcular(g: np.ndarray, mascara: np.ndarray, pe, pi, ce: Circulo, ci: Circul
     r["hu1"] = float(-np.sign(hu[0]) * np.log10(abs(hu[0]) + 1e-12))
     r["radio_ext"] = ce.r
     return r
+
+
+def relleno_sector_min(mascara: np.ndarray, ce: Circulo, ci: Circulo, ancho: int = 10, margen: float = 1.5) -> float:
+    """Relleno mínimo del anillo en una ventana de `ancho` grados: busca cortes radiales finos.
+
+    Se toman los píxeles del anillo entre el círculo interior y el exterior, con un margen
+    para no contar el borde. Para cada grado alrededor del centro exterior se cuenta qué
+    fracción es material, y se promedia en una ventana circular de `ancho` grados. Una
+    golilla sana da ≈ 1 en todas las ventanas; un corte radial baja la ventana que lo cruza.
+    No está en NOMBRES: lo usa e11 (ADR 0014) como candidato, sin cambiar la selección de e05.
+    """
+    if not np.isfinite(ce.r) or ce.r < 5:
+        return np.nan
+    h, w = mascara.shape
+    x0, x1 = max(0, int(ce.cx - ce.r) - 2), min(w, int(ce.cx + ce.r) + 3)
+    y0, y1 = max(0, int(ce.cy - ce.r) - 2), min(h, int(ce.cy + ce.r) + 3)
+    yy, xx = np.mgrid[y0:y1, x0:x1]
+    anillo = np.hypot(xx - ce.cx, yy - ce.cy) < ce.r - margen
+    if np.isfinite(ci.r):
+        anillo &= np.hypot(xx - ci.cx, yy - ci.cy) > ci.r + margen
+    if anillo.sum() < 100:
+        return np.nan
+    grado = ((np.degrees(np.arctan2(yy - ce.cy, xx - ce.cx))[anillo] + 360) % 360).astype(int) % 360
+    material = (mascara[y0:y1, x0:x1][anillo] > 0).astype(float)
+    total = np.bincount(grado, minlength=360).astype(float)
+    lleno = np.bincount(grado, weights=material, minlength=360)
+    v = np.ones(ancho)
+    total_v = np.convolve(np.r_[total, total[: ancho - 1]], v, "valid")
+    lleno_v = np.convolve(np.r_[lleno, lleno[: ancho - 1]], v, "valid")
+    ok = total_v > 0
+    return float((lleno_v[ok] / total_v[ok]).min()) if ok.any() else np.nan
