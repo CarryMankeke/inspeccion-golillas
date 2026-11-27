@@ -69,5 +69,33 @@
         "C": 0.977
       }
     }
+  },
+  "linea_base": {
+    "opcion": "reglas_matlab",
+    "criterio": "port de classifyWasher.m; soportes de Hough elegidos para reproducir los veredictos (como el original)",
+    "soporte_ext": 1.2,
+    "soporte_int": 2.5,
+    "resustitucion": "1.000",
+    "A": {
+      "deteccion": 0.833,
+      "falsas": 0.067
+    },
+    "R": {
+      "deteccion": 0.905,
+      "falsas": 0.0
+    },
+    "C": {
+      "deteccion": 0.667,
+      "falsas": 0.377
+    },
+    "C_rango": {
+      "deteccion": 0.703,
+      "falsas": 0.352,
+      "radio_px": [
+        46.9,
+        51.5
+      ]
+    },
+    "ms_mediana": 22.5
   }
 }
