@@ -1,6 +1,6 @@
 # ADR 0015 · N1 v4: opciones después de e11, y el plan de la v4
 
-**Estado:** propuesta, con el criterio fijado antes de correr · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Script:** `experimentos/e12_n1_v4.py` (por escribir; la prueba ciega propia pasa a e13)
+**Estado:** propuesta, con el criterio fijado antes de correr · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Script:** `experimentos/e12_n1_v4.py` (escrito; la prueba ciega propia pasa a e13)
 
 ## Contexto
 En la v3 (e11, [ADR 0014](0014-n1-v3-varios-montajes.md)) ningún candidato cumplió el criterio. Hay tres causas, y las tres están medidas:
@@ -57,6 +57,18 @@ Lo que dice la literatura y cambia el plan:
 **Respaldo nuevo:** si ninguno cumple 1 y 2, se toma, entre los que cumplen 2, la mayor detección media. Si ninguno cumple 2, se toma la menor tasa media de falsas alarmas. En los dos casos el resultado se informa como «ninguno cumple» y no se adopta.
 
 **Cómo se informa:** cada tasa va con su IC95 exacto (Clopper-Pearson). El set de prueba de Edge Impulse se corre después de guardar la elección, solo para informar y marcado «no ciego».
+
+## Detalles de implementación (fijados antes de correr e12)
+- **Datos:** e12 reusa los rasgos y recortes de e11, porque son las mismas fotos, la misma cadena y la misma regla de polaridad.
+- **Partición:** en cada montaje se baraja con `np.random.default_rng(0)` el orden de e11 de sus buenas de calibración. Las sintéticas y Kaggle se parten en dos mitades: la primera ajusta y la segunda calibra. Edge Impulse se parte en tres tercios de 91: ajustan, calibran y miden. La partición queda en `resultados/e12_particion.csv`.
+- **Bancos de PatchCore:** todos los grupos que ajustan tienen 91 buenas o más, así que van sin giros, por la regla de e11.
+- **Piezas sin medir en la clásica:** se retiran siempre (z = ∞), y no ajustan ni calibran. Así, el n que calibra la clásica puede ser menor que el de PatchCore, y se informa.
+- **Fusión:** en los montajes con umbral conformal, cada parte usa su umbral de α/2. En el montaje propio, sus partes usan las reglas de e11, igual que la fusión de e11.
+- **Respaldo:** usa el mismo desempate (≤ 2 puntos; luego la más explicable y la más rápida). La «tasa media de falsas alarmas» es el promedio de las tres tasas del requisito 2: propias, Kaggle y el tercio de Edge Impulse que mide.
+- **Edge Impulse de prueba (no ciego):** usa el modelo del tercio que ajusta y el umbral del tercio que calibra. Se corre después de guardar la elección.
+- **Control:** en el montaje propio, los 6 candidatos de e11 tienen que repetir sus números de e11, porque el código y las reglas son los mismos.
+- **Prueba de humo:** `--humo` corre con las muestras chicas de e11 y con α = 10 %, porque con 20–30 buenas que calibran el umbral del 3 % no existe. No guarda la decisión. Corrió en 4 minutos, y el control dio igual a e11. Donde las buenas que calibran y las que miden vienen del mismo grupo, la tasa de falsas quedó cerca de α: de 0 a 7 de 60 en las sintéticas, y de 0 a 1 de 20 en el tercio de Edge Impulse. En Kaggle, en cambio, PatchCore retiró las 60 buenas de prueba. La causa es la muestra chica: el humo toma los primeros 60 archivos de cada grupo, y en Kaggle esas buenas que calibran son muy parejas (desviación del radio equivalente de 1,3 px, contra 5,0 px en las de prueba). En la corrida completa las buenas que calibran son 500 al azar, con una desviación de 6,2 px. Después del humo no se cambió ni el código ni el criterio.
+- **Decisión:** se guarda como `enfoque_v4`, con `ninguno_cumple` y `adoptado`.
 
 ## Qué cambia en el set ciego propio
 Para que el umbral conformal funcione también en el montaje propio, la sesión de fotos del [ADR 0014](0014-n1-v3-varios-montajes.md) pasa de 15 a **50 buenas de calibración**: 16 ajustan (banco y covarianza) y 34 calibran el umbral, una más que el mínimo de 33 para α = 3 %. El total sube a 100 fotos: 50 que calibran, más 25 buenas y 25 malas de prueba. Esas fotos siguen sin tomarse, así que el cambio no compromete la prueba ciega.

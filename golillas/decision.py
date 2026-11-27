@@ -94,6 +94,20 @@ class Mahalanobis:
                     umbral=float(self.t), p=self.p)
 
 
+def umbral_conformal(puntajes, alfa: float) -> float:
+    """Umbral conformal partido con una tasa de falsas alarmas α (Angelopoulos y Bates, §1 y apéndice D).
+
+    Es el puntaje número ⌈(n+1)(1−α)⌉ de las n buenas de calibración, ordenadas de menor a mayor.
+    Las buenas de calibración no pueden haber ajustado el modelo. Si una buena nueva viene del
+    mismo montaje y lote, supera el umbral con probabilidad ≤ α. Si α < 1/(n+1), el umbral no
+    existe y se devuelve ∞ (no se retira nada). Los puntajes no finitos no calibran.
+    """
+    s = np.sort(np.asarray(puntajes, float))
+    s = s[np.isfinite(s)]
+    k = int(np.ceil((len(s) + 1) * (1 - alfa) - 1e-9))
+    return float(s[k - 1]) if 1 <= k <= len(s) else float("inf")
+
+
 def mahalanobis_desde(par: dict, X) -> np.ndarray:
     """Distancia de Mahalanobis² con parámetros guardados (sin scikit-learn)."""
     Z = (_limpio(np.atleast_2d(X)) - np.array(par["media"])) / np.array(par["escala"]) - np.array(par["centro"])
