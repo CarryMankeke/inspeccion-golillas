@@ -15,6 +15,7 @@ Corre en la GTX 1060 de norea-node (mirar `nvidia-smi` antes).
 """
 
 import json
+import sys
 import time
 
 import cv2
@@ -22,7 +23,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as Fn
-from comun import AQUA, AZUL, NARANJA, RESULTADOS, barras_h, decision, estilo, guardar
+from comun import AQUA, AZUL, NARANJA, RESULTADOS, TINTA2, barras_h, decidir, decision, estilo, guardar
 from matplotlib import pyplot as plt
 from torchvision.models import ResNet18_Weights, resnet18
 
@@ -147,9 +148,8 @@ def metricas(y, p):
     return dict(deteccion=float(p[y].mean()) if y.any() else np.nan, falsas=float(p[~y].mean()))
 
 
-def main():
+def calcular():
     global DEV
-    estilo()
     reales = cargar_reales()
     Xr = tensor([recorte(m.imagen()) for m in reales])
     yr = np.array([m.es_mala for m in reales])
@@ -212,18 +212,44 @@ def main():
     T.to_csv(RESULTADOS / "e08_enfoques.csv")
     (RESULTADOS / "e08_dispositivo.json").write_text(json.dumps({"dispositivo": torch.cuda.get_device_name(0)
                                                                 if torch.cuda.is_available() else "cpu"}))
+    return T
+
+
+def main():
+    estilo()
+    csv = RESULTADOS / "e08_enfoques.csv"
+    T = pd.read_csv(csv, index_col="enfoque") if csv.exists() and "--recalcular" not in sys.argv else calcular()
+
+    # Decisión N1: detectar todas las malas reales (A y R) manda; luego menos falsas alarmas;
+    # empate → la más rápida en CPU (el PC de la línea no tiene por qué tener GPU).
+    cumple = T[(T.A_deteccion >= 1) & (T.R_deteccion >= 0.99)]
+    base = cumple if len(cumple) else T
+    falsas = base.A_falsas + base.R_falsas
+    elegido = base[falsas <= falsas.min() + 1e-9].ms_cpu.idxmin()
+    e = T.loc[elegido]
+    decidir("enfoque", elegido,
+            "100 % de malas reales detectadas (A y giros R); luego menos falsas alarmas; empate → más rápida en CPU",
+            A_deteccion=round(float(e.A_deteccion), 3), R_deteccion=round(float(e.R_deteccion), 3),
+            C_deteccion=round(float(e.C_deteccion), 3), ms_cpu=round(float(e.ms_cpu), 1),
+            otros={k: dict(A=round(float(T.loc[k, "A_deteccion"]), 3), R=round(float(T.loc[k, "R_deteccion"]), 3),
+                           C=round(float(T.loc[k, "C_deteccion"]), 3)) for k in T.index if k != elegido})
 
     orden = list(T.index)
-    fig, axs = plt.subplots(1, 4, figsize=(16, 3.4), sharey=True)
-    for ax, p, titulo in zip(axs, "ARC", ["A · reales, dejando una fuera", "R · reales giradas",
-                                          "C · sintéticas (600)"]):
+    fig, axs = plt.subplots(1, 4, figsize=(16, 3.6), sharey=True)
+    for ax, p, titulo in zip(axs, "ARC", ["A · 21 reales, dejando una fuera", "R · las mismas, giradas",
+                                          "C · 600 sintéticas"]):
         barras_h(ax, orden, [100 * T.loc[orden, f"{p}_deteccion"], 100 * T.loc[orden, f"{p}_falsas"]],
-                 ["malas detectadas (%)", "buenas retiradas (%)"], colores=[AZUL, NARANJA], elegido="clasica",
-                 fmt="{:.0f}", lim=(0, 118))
+                 ["malas detectadas (%)", "buenas retiradas por error (%)"], colores=[AZUL, NARANJA],
+                 elegido=elegido, fmt="{:.0f}", lim=(0, 118), leyenda=False)
         ax.set_title(titulo, fontsize=10)
     barras_h(axs[3], orden, [T.loc[orden, "ms_cpu"], T.loc[orden, "ms_gpu"]], ["CPU i3", "GPU GTX 1060"],
-             colores=[AQUA, AZUL], elegido="clasica", fmt="{:.0f}")
-    axs[3].set_title("ms por pieza", fontsize=10)
+             colores=[AQUA, TINTA2], elegido=elegido, fmt="{:.0f}", leyenda=False)
+    axs[3].set_title("ms por pieza (la clásica no usa GPU)", fontsize=10)
+    h1, l1 = axs[0].get_legend_handles_labels()
+    h2, l2 = axs[3].get_legend_handles_labels()
+    fig.legend(h1 + h2, l1 + l2, loc="lower center", ncol=4, fontsize=8, bbox_to_anchor=(0.5, -0.06))
+    fig.suptitle("N1 · ¿Visión clásica o red neuronal? La clásica detecta todas las malas reales y es "
+                 "rápida sin GPU", x=0.01, ha="left", fontsize=12, y=1.03)
     guardar(fig, "e08_enfoques.png")
     print(T.round(3).to_string())
 

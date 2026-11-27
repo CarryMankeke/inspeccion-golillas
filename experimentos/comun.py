@@ -39,7 +39,7 @@ def estilo():
     })
 
 
-def barras_h(ax, nombres, series, etiquetas=None, colores=None, elegido=None, fmt="{:.3f}", lim=None):
+def barras_h(ax, nombres, series, etiquetas=None, colores=None, elegido=None, fmt="{:.3f}", lim=None, leyenda=True):
     """Barras horizontales agrupadas; la opción elegida va en negrita con ★."""
     series = [np.asarray(s, float) for s in series]
     n = len(series)
@@ -63,7 +63,7 @@ def barras_h(ax, nombres, series, etiquetas=None, colores=None, elegido=None, fm
     ax.grid(axis="y", visible=False)
     if lim:
         ax.set_xlim(*lim)
-    if etiquetas:
+    if etiquetas and leyenda:
         ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=len(etiquetas), fontsize=8)
 
 

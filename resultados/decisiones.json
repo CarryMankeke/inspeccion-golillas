@@ -49,5 +49,25 @@
       "encoder": true,
       "encoder+sensor": true
     }
+  },
+  "enfoque": {
+    "opcion": "clasica",
+    "criterio": "100 % de malas reales detectadas (A y giros R); luego menos falsas alarmas; empate → más rápida en CPU",
+    "A_deteccion": 1.0,
+    "R_deteccion": 1.0,
+    "C_deteccion": 1.0,
+    "ms_cpu": 36.3,
+    "otros": {
+      "anomalias_red": {
+        "A": 0.667,
+        "R": 0.667,
+        "C": 0.78
+      },
+      "red_supervisada": {
+        "A": 0.833,
+        "R": 0.881,
+        "C": 0.977
+      }
+    }
   }
 }
