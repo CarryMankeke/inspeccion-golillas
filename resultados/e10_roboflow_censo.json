@@ -1,0 +1,21 @@
+{
+ "imagenes": 187,
+ "cajas_por_clase": {
+  "scratch": 200,
+  "coating-missing": 69
+ },
+ "imagenes_sin_cajas": 2,
+ "sin_cajas": [
+  "WIN_20250711_09_23_24_Pro_jpg.rf.fe6f6c9cad9f36fe382e24ca0efe6cd7.jpg",
+  "WIN_20250711_09_23_29_Pro_jpg.rf.8393fe2e80a08b093f8999e9820309eb.jpg"
+ ],
+ "dias_de_captura": {
+  "20250711": 25,
+  "20251022": 162
+ },
+ "tamanos": [
+  "1920x1080"
+ ],
+ "medible": false,
+ "motivo": "0 buenas: las imágenes sin cajas también muestran rayones a ojo (anotación incompleta); sin buenas no se calibra ni se miden falsas alarmas"
+}

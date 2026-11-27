@@ -1,6 +1,6 @@
 # ADR 0013 · Datos públicos: una prueba ciega con fotos de otros laboratorios
 
-**Estado:** aceptada; prueba ciega corrida con Edge Impulse (e10) · **Fecha:** 2026-11-27 · **Scripts:** `scripts/descargar_datos.py`, `experimentos/e10_prueba_ciega.py`
+**Estado:** aceptada; prueba ciega corrida con Edge Impulse (e10); Roboflow revisado y descartado para aprobar/retirar · **Fecha:** 2026-11-27 · **Scripts:** `scripts/descargar_datos.py`, `experimentos/e10_prueba_ciega.py`
 
 ## Contexto
 Las 21 fotos reales sirvieron para elegir y para informar, así que no son una prueba ciega ([ADR 0004](0004-n1-enfoque.md)). Con solo 6 malas, el IC95 de la detección va de 54 % a 100 %. Hace falta validar con muchas más golillas, que nunca hayan participado en una decisión. El código del proyecto es abierto (MIT) y sin uso comercial, así que cada dataset debe tener una licencia que permita usarlo así.
@@ -12,7 +12,7 @@ El proyecto MATLAB anterior (`Vision-Artificial-Clasica`, junio 2025) usaba un d
 |---|---|---|---|---|---|
 | **Edge Impulse «Flat washers»** ([fuente](https://docs.edgeimpulse.com/datasets/image/flat-washers)) | 464: 273 buenas de entrenamiento; prueba 191 = **103 malas** + 88 buenas | Anillo cortado o deformado | **Alto**: fotos reales, una golilla plana vista desde arriba. Fondo blanco o gris oscuro; la golilla cae en cualquier lugar | BSD 3-Clause Clear | Directa, sin cuenta, 37 MB |
 | **CSEM-MISD, golillas** ([fuente](https://zenodo.org/records/5513769)) | 50 piezas, todas malas, 108 fotos por pieza | Rayones y abolladuras chicas (0,2–3 % de la pieza) | Bajo: primer plano en gris bajo una cúpula de 108 luces; la forma está intacta | CC BY-NC-ND 4.0 (uso sin modificar ni redistribuir) | Directa, sin cuenta, 888 MB |
-| **Roboflow «Washer Defects»** de MassMEP ([fuente](https://universe.roboflow.com/massmep/washer-defects-3usoj)) | 187 (malas: sin desglose) | Rayón, falta de recubrimiento | Medio: golilla negra vista desde arriba sobre fondo gris; los defectos son de superficie, no de forma | CC BY 4.0 | **Pide cuenta de Roboflow** |
+| **Roboflow «Washer Defects»** de MassMEP ([fuente](https://universe.roboflow.com/massmep/washer-defects-3usoj)) | 187, **todas malas** (ver abajo) | Rayón, falta de recubrimiento | Medio: golilla negra vista desde arriba sobre fondo gris; los defectos son de superficie, no de forma | CC BY 4.0 | Pide cuenta: Camilo lo exportó a mano en COCO |
 | **Kaggle «Simplified washers»** ([fuente](https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection)) | 1.200: 1.000 buenas de entrenamiento; prueba 100 malas + 100 buenas | Dibujados | Bajo: dibujos de 128 px | CC BY-SA 4.0 | **Pide cuenta de Kaggle**; hay una copia en el OneDrive del PC Windows |
 | Roboflow «Washer Classifier» ([fuente](https://universe.roboflow.com/cap-inspection-cioib/washer-classifier-fohnr)) | 443 (ok / ng) | Golilla con defecto o doble | Bajo: golillas montadas dentro de tapas negras | CC BY 4.0 | Pide cuenta |
 | MVTec AD `metal_nut` | 335 (93 malas, **no verificado**) | Doblada, rayón, color | Medio: tuerca de 4 lóbulos, no golilla | CC BY-NC-SA 4.0 según Hugging Face; **no verificada** porque mvtec.com no abrió | Formulario en mvtec.com |
@@ -38,7 +38,7 @@ En total, hasta ~360 malas reales contra las 6 de hoy. Ninguna imagen se sube al
 ## Lo que pasó al bajarlos (27 nov 2026)
 - **Edge Impulse** y **CSEM-MISD** se bajaron sin cuenta, con su tamaño y su huella verificados. Las huellas SHA-256 quedaron fijadas en el script; CSEM-MISD además calzó con el MD5 que publica Zenodo.
 - **CSEM-MISD no sirve para aprobar o retirar.** Son 50 golillas, no 70, y todas tienen defecto: no hay buenas para calibrar ni para medir falsas alarmas. Además, son primeros planos con rayones o abolladuras chicas, y la forma de la pieza está intacta. Queda bajado para un trabajo futuro de segmentación de defectos.
-- **Roboflow y Kaggle** piden cuenta, así que no se bajaron. Quedan para Camilo; el Kaggle también está en el OneDrive del PC Windows.
+- **Roboflow y Kaggle** piden cuenta, así que no se bajaron ese día. Roboflow lo exportó Camilo después (ver la sección siguiente). Kaggle ya se puede bajar por el conector de Kaggle, con el OK de Camilo.
 
 ## Resultado de la prueba ciega (e10, Edge Impulse)
 Protocolo P1: polaridad automática y sin etiquetas, porque la cadena espera una golilla oscura sobre fondo claro. Cada enfoque se calibra con las 273 buenas.
@@ -63,6 +63,18 @@ Lectura:
 - **La red supervisada ordena regular (AUC 0,79), pero ningún umbral sirve.** Con 0,5 retira casi todo, y con el umbral calibrado con buenas no retira nada. Lo que aprendió con nuestras fotos y sintéticas no se traslada.
 - Sin recalibrar, la clásica retira casi todo: calibrar con piezas buenas del montaje es obligatorio.
 
-Esta prueba **no cambia ninguna decisión**: si se eligiera con ella, dejaría de ser ciega. Lo que sigue está en el [ADR 0004](0004-n1-enfoque.md).
+### Bloque 2: Roboflow MassMEP no se puede medir (27 nov 2026)
+Camilo exportó el dataset en formato COCO (192 archivos, 10 MB). Está en norea, en `data/publico/roboflow_massmep_washers/`, y su huella del árbol quedó fijada en `scripts/descargar_datos.py` (`--verificar` la comprueba). El protocolo del traspaso decía que las imágenes sin cajas eran las buenas que calibran. Antes de correr cualquier enfoque, e10 hace un censo (`resultados/e10_roboflow_censo.json`):
+
+| Qué | Cuántas |
+|---|---|
+| Imágenes (1920 × 1080, cámara web) | 187 |
+| Cajas de defecto | 200 rayones y 69 sin recubrimiento |
+| Imágenes sin cajas | 2, y ambas muestran rayones a la vista: les falta la anotación |
+| Días de captura | 25 fotos el 11 jul 2025 y 162 el 22 oct 2025 |
+
+**No hay ninguna golilla buena.** Sin buenas no se puede calibrar ni medir falsas alarmas, así que no se corrió ningún enfoque. Además, varias fotos seguidas parecen ser la misma golilla movida (a ojo, **no verificado**), así que 187 fotos no son 187 piezas. Queda bajado, igual que CSEM-MISD, para un trabajo futuro de localizar defectos de superficie. Para el censo solo se miraron 4 fotos a ojo; ningún enfoque se ha corrido sobre él.
+
+Esta prueba **no cambia ninguna decisión**: si se eligiera con ella, dejaría de ser ciega. Lo que sigue está en el [ADR 0004](0004-n1-enfoque.md) y el plan de la v3, con su set ciego nuevo, en el [ADR 0014](0014-n1-v3-varios-montajes.md).
 
 Volver al [árbol](../arbol.md).

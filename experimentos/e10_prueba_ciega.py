@@ -27,6 +27,12 @@ Protocolo, fijado antes de correr y mirando solo las buenas de calibración:
 Métricas: malas detectadas, buenas retiradas, AUC con IC95 (bootstrap), fallas de medición
 y desglose por fondo (claro u oscuro, según la regla de polaridad). No escribe decisiones.
 Corre en norea-node (GPU para las redes; mirar `nvidia-smi` antes).
+
+Bloque 2: Roboflow «Washer Defects» de MassMEP (CC BY 4.0, COCO, copia manual verificada con
+`python scripts/descargar_datos.py --verificar roboflow_massmep_washers`). Protocolo fijado en
+el traspaso: las imágenes sin cajas serían las buenas que calibran, y los tres enfoques se
+medirían una sola vez como arriba. Primero se hace el censo (sin correr ningún enfoque): si no
+hay buenas, el bloque no puede calibrar ni medir falsas alarmas, y se informa solo el censo.
 """
 
 import json
@@ -48,6 +54,7 @@ from golillas.datos import RAIZ
 from golillas.inspector import CALIBRACION
 
 EI = RAIZ / "data" / "publico" / "edge_impulse_flat_washers"
+RF = RAIZ / "data" / "publico" / "roboflow_massmep_washers"
 PROTOCOLOS = ("P0", "P1")
 
 
@@ -174,8 +181,41 @@ def ejemplos(P):
     print("  → e10_ejemplos.jpg")
 
 
+def censo_roboflow():
+    """Bloque 2: cuenta imágenes, cajas por clase, imágenes sin cajas y días de captura."""
+    if not RF.exists():
+        print("Roboflow: no está en data/publico (copia manual; ver scripts/descargar_datos.py)")
+        return None
+    imgs, cajas, por_img = 0, {}, []
+    dias = {}
+    for split in ("train", "valid", "test"):
+        j = json.loads((RF / split / "_annotations.coco.json").read_text())
+        nombre = {c["id"]: c["name"] for c in j["categories"]}
+        n = {}
+        for a in j["annotations"]:
+            cajas[nombre[a["category_id"]]] = cajas.get(nombre[a["category_id"]], 0) + 1
+            n[a["image_id"]] = n.get(a["image_id"], 0) + 1
+        for i in j["images"]:
+            imgs += 1
+            por_img.append(dict(split=split, archivo=i["file_name"], cajas=n.get(i["id"], 0),
+                                tamano=f"{i['width']}x{i['height']}"))
+            dia = i["extra"]["name"][4:12]  # WIN_AAAAMMDD_hh_mm_ss_Pro.jpg (cámara web)
+            dias[dia] = dias.get(dia, 0) + 1
+    sin_cajas = [r for r in por_img if r["cajas"] == 0]
+    c = dict(imagenes=imgs, cajas_por_clase=cajas, imagenes_sin_cajas=len(sin_cajas),
+             sin_cajas=[r["archivo"] for r in sin_cajas], dias_de_captura=dias,
+             tamanos=sorted({r["tamano"] for r in por_img}),
+             medible=False,
+             motivo=("0 buenas: las imágenes sin cajas también muestran rayones a ojo (anotación incompleta); "
+                     "sin buenas no se calibra ni se miden falsas alarmas"))
+    (RESULTADOS / "e10_roboflow_censo.json").write_text(json.dumps(c, ensure_ascii=False, indent=1))
+    print(f"Roboflow: {imgs} imágenes, cajas {cajas}, {len(sin_cajas)} sin cajas, días {dias} → no medible")
+    return c
+
+
 def main():
     estilo()
+    censo_roboflow()
     csv = RESULTADOS / "e10_prueba_ciega.csv"
     if csv.exists() and "--recalcular" not in sys.argv:
         T, P = pd.read_csv(csv), pd.read_csv(RESULTADOS / "e10_puntajes.csv")

@@ -7,8 +7,12 @@ Cada fuente queda en data/publico/<nombre>/ (ignorado por git). El script compru
 tamaño y la huella del archivo (SHA-256, o el MD5 que publica Zenodo). Si la huella aún no
 está fijada en FUENTES, la imprime para fijarla en el commit siguiente: desde ahí,
 cualquier cambio del archivo en el servidor detiene la descarga. Las licencias y
-atribuciones están en data/ATRIBUCIONES.md. Roboflow y Kaggle piden cuenta: esos se bajan
-a mano (ver docs/adr/0013-datos-publicos.md).
+atribuciones están en data/ATRIBUCIONES.md.
+
+Roboflow pide cuenta: se baja a mano desde su página (formato COCO) y se copia a
+data/publico/<nombre>/. Para esas fuentes, `--verificar` calcula la huella del árbol (SHA-256
+de la lista ordenada «sha256  ./ruta» de cada archivo, como `sha256sum`) y la compara con la
+fijada: `python scripts/descargar_datos.py --verificar roboflow_massmep_washers`.
 """
 
 from __future__ import annotations
@@ -41,6 +45,14 @@ FUENTES = {
         fuente="https://zenodo.org/records/5513769",
         formato="tar.gz",
     ),
+    "roboflow_massmep_washers": dict(
+        manual=True,  # pide cuenta: se exporta a mano en formato COCO (Camilo, 27 nov 2026)
+        url="https://universe.roboflow.com/massmep/washer-defects-3usoj",
+        archivos=192,
+        arbol_sha256="b55de72e78b4a448f5900eac3fe6dbe23ca7ab2731048d742f37264278b2c7fb",  # fijada el 27 nov 2026
+        licencia="CC BY 4.0",
+        fuente="https://universe.roboflow.com/massmep/washer-defects-3usoj",
+    ),
 }
 
 
@@ -52,8 +64,29 @@ def huella(ruta: Path, algoritmo: str = "sha256") -> str:
     return h.hexdigest()
 
 
+def huella_arbol(carpeta: Path) -> tuple[str, int]:
+    """SHA-256 de la lista ordenada «sha256  ./ruta» (igual que find | sort | sha256sum)."""
+    rutas = sorted((r for r in carpeta.rglob("*") if r.is_file() and r.name != ".DS_Store"),
+                   key=lambda r: str(r.relative_to(carpeta)).encode())
+    lista = "".join(f"{huella(r)}  ./{r.relative_to(carpeta).as_posix()}\n" for r in rutas)
+    return hashlib.sha256(lista.encode()).hexdigest(), len(rutas)
+
+
+def verificar(nombre: str) -> None:
+    f, carpeta = FUENTES[nombre], DESTINO / nombre
+    if not carpeta.exists():
+        sys.exit(f"{nombre}: no está en {carpeta}. Bájalo a mano desde {f['url']} (formato COCO).")
+    h, n = huella_arbol(carpeta)
+    if n != f["archivos"] or h != f["arbol_sha256"]:
+        sys.exit(f"{nombre}: {n} archivos, huella {h}. No calza con la fijada; revisa la copia.")
+    print(f"{nombre}: {n} archivos, huella del árbol correcta")
+
+
 def descargar(nombre: str, forzar: bool = False) -> Path:
     f = FUENTES[nombre]
+    if f.get("manual"):
+        verificar(nombre)
+        return DESTINO / nombre
     carpeta = DESTINO / nombre
     if carpeta.exists() and not forzar:
         print(f"{nombre}: ya está en {carpeta} (usa --forzar para bajarlo de nuevo)")
@@ -91,10 +124,16 @@ def main():
     p.add_argument("nombres", nargs="*")
     p.add_argument("--lista", action="store_true")
     p.add_argument("--forzar", action="store_true")
+    p.add_argument("--verificar", action="store_true", help="solo comprueba la huella de una copia manual")
     a = p.parse_args()
     if a.lista or not a.nombres:
         for n, f in FUENTES.items():
-            print(f"{n}: {f['bytes'] / 1e6:.1f} MB · {f['licencia']} · {f['fuente']}")
+            tam = "a mano" if f.get("manual") else f"{f['bytes'] / 1e6:.1f} MB"
+            print(f"{n}: {tam} · {f['licencia']} · {f['fuente']}")
+        return
+    if a.verificar:
+        for n in a.nombres:
+            verificar(n)
         return
     for n in a.nombres:
         descargar(n, a.forzar)

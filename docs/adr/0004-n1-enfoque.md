@@ -64,7 +64,7 @@ Con 191 fotos de otro laboratorio (Edge Impulse; detalle en el [ADR 0013](0013-d
 
 **La decisión no se cambia con esta prueba**, porque elegir con ella le quitaría lo ciego. Lo que sí cambia es lo que se puede afirmar: «la clásica gana» vale para el montaje propio y para defectos de forma, no en general.
 
-**Qué sigue (v3):** reabrir el N1 con PatchCore como candidato principal y una clásica con rasgos de tamaño (razón de radios y radio en mm). Se elige con datos de calibración de varios montajes. Para que la prueba vuelva a ser ciega hace falta un set real nuevo: 30–50 fotos propias, o Roboflow MassMEP con cuenta. El set de prueba de Edge Impulse ya no sirve como prueba ciega, porque sus resultados ya se vieron.
+**Qué sigue (v3):** reabrir el N1 con PatchCore como candidato principal y una clásica con rasgos de tamaño (razón de radios y radio exterior). Se elige con varios montajes y se prueba con 50 fotos propias nuevas, porque Roboflow no trae golillas buenas y el set de prueba de Edge Impulse ya se vio. El plan y su criterio, fijados antes de correr, están en el [ADR 0014](0014-n1-v3-varios-montajes.md).
 
 ## Consecuencias
 - La cadena clásica explica sus decisiones («borde del agujero dañado»); las redes no.
