@@ -28,7 +28,7 @@ FUENTES = {
     "edge_impulse_flat_washers": dict(
         url="https://cdn.edgeimpulse.com/datasets/Visual+Anomaly+Detection+-+Flat+washers.zip",
         bytes=37_261_072,
-        sha256=None,  # se fija tras la primera descarga
+        sha256="4a9c9b8bb291decd941aca2055c87760ffe38cbcd5cd9dcd109684cfc9db16fb",  # fijada el 27 nov 2026
         licencia="BSD 3-Clause Clear",
         fuente="https://docs.edgeimpulse.com/datasets/image/flat-washers",
     ),
@@ -36,7 +36,7 @@ FUENTES = {
         url="https://zenodo.org/api/records/5513769/files/washer.tar.gz/content",
         bytes=888_092_869,
         md5="9097ae81e3ef62b778470b79902552f8",  # publicado por Zenodo
-        sha256=None,
+        sha256="642d4c37dff093b1182ea9211411561d3b3370878ffbdd422d8cba809c832f91",  # fijada el 27 nov 2026
         licencia="CC BY-NC-ND 4.0 (sin modificar ni redistribuir)",
         fuente="https://zenodo.org/records/5513769",
         formato="tar.gz",

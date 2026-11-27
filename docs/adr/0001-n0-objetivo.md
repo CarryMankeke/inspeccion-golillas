@@ -23,6 +23,8 @@ Detectar con una cámara las golillas defectuosas que pasan por una cinta transp
 
 Los intervalos son anchos porque 6 y 15 fotos son pocas: el resultado real es "ninguna falla en esta muestra", no "nunca falla". Además, las 21 fotos reales sirvieron para elegir técnicas (por ejemplo, el modelo del proceso 6) y también para informar estos números. Son una **validación, no una prueba ciega**: hace falta un set real nuevo que no se use para decidir nada (ver "Limitaciones y próximos pasos" en el README).
 
+**Prueba ciega (e10, 27 nov 2026):** con 191 fotos de otro laboratorio, calibrando con sus buenas, la cadena detecta 32 de 103 malas (31 %) y retira 1 de 88 buenas. Si se mira solo el fondo claro, detecta 14 de 34 y no retira ninguna de las 29 buenas. Las metas de esta tabla se cumplen en el montaje propio, no en uno ajeno ([ADR 0013](0013-datos-publicos.md)).
+
 ## Consecuencias
 - Cada proceso (N3) se decide con una métrica y un criterio escritos en su script, y el resultado queda en `resultados/decisiones.json`.
 - Antes de comparar técnicas se fijó contra qué ganarle: las reglas del MATLAB original ([ADR 0003](0003-n1-linea-base-matlab.md)).

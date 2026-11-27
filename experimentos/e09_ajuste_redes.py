@@ -219,9 +219,9 @@ class PatchCore:
         return f.permute(0, 2, 3, 1).reshape(x.shape[0], -1, f.shape[1])  # N × parches × C
 
     @torch.no_grad()
-    def ajustar(self, xb):
+    def ajustar(self, xb, giros=8):
         partes, duenos = [], []
-        for k in range(8):
+        for k in range(giros):
             for i in range(0, len(xb), 32):
                 f = self.rasgos(gira(xb[i : i + 32], k))
                 partes.append(f.reshape(-1, f.shape[-1]))

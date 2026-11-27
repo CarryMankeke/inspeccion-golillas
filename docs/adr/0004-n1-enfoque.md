@@ -1,6 +1,6 @@
 # ADR 0004 · N1: visión clásica o red neuronal
 
-**Estado:** aceptada; revisada con el ajuste justo de las redes (e09) · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Scripts:** `experimentos/e08_enfoques.py`, `experimentos/e09_ajuste_redes.py`
+**Estado:** aceptada para el montaje propio; **en revisión**, porque la prueba ciega (e10) muestra que no se generaliza · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Scripts:** `experimentos/e08_enfoques.py`, `experimentos/e09_ajuste_redes.py`, `experimentos/e10_prueba_ciega.py`
 
 ## Contexto
 Hoy muchas inspecciones visuales se resuelven con redes neuronales. Antes de quedarse con la visión clásica había que medirla contra ellas con las mismas pruebas. La primera comparación (e08) dejó a las redes en desventaja, así que se repitió con un ajuste justo (e09).
@@ -47,7 +47,24 @@ Configuraciones elegidas en validación sintética: red supervisada con lr = 1e-
 ## Límites
 - Todo sigue medido con 21 fotos reales y 6 malas. Cuando una prueba separa perfecto, el bootstrap del AUC da un intervalo de [1, 1], que no informa nada.
 - El umbral de 0,5 y la receta del ajuste con reales quedaron fijos, sin buscar.
-- La prueba que puede cambiar esta decisión es la ciega con datos públicos ([ADR 0013](0013-datos-publicos.md)). Si ahí cambia el resultado, este ADR se reemplaza.
+- La prueba ciega con datos públicos ya se corrió: ver la sección siguiente.
+
+## Prueba ciega (e10): el resultado no se sostiene fuera del montaje propio
+Con 191 fotos de otro laboratorio (Edge Impulse; detalle en el [ADR 0013](0013-datos-publicos.md)), calibrando cada enfoque con 273 buenas de ese montaje:
+
+| Enfoque | Malas detectadas (de 103) | Buenas retiradas (de 88) | AUC (IC95) |
+|---|---|---|---|
+| Clásica | 32 (31 %) | 1 | 0,75 (0,68–0,81) |
+| Red supervisada | 103 o 0, según el umbral | 86 o 0 | 0,79 (0,72–0,84) |
+| **PatchCore** | **69 (67 %)** | **3** | **0,95 (0,92–0,97)** |
+
+- **Ningún enfoque cumple el criterio** de detectar el 100 %.
+- **PatchCore ordena mucho mejor**, porque solo necesita piezas buenas del montaje nuevo.
+- **La clásica falla por diseño**: no mide tamaño, así que no ve las golillas de agujero chico, y no ve cortes radiales finos.
+
+**La decisión no se cambia con esta prueba**, porque elegir con ella le quitaría lo ciego. Lo que sí cambia es lo que se puede afirmar: «la clásica gana» vale para el montaje propio y para defectos de forma, no en general.
+
+**Qué sigue (v3):** reabrir el N1 con PatchCore como candidato principal y una clásica con rasgos de tamaño (razón de radios y radio en mm). Se elige con datos de calibración de varios montajes. Para que la prueba vuelva a ser ciega hace falta un set real nuevo: 30–50 fotos propias, o Roboflow MassMEP con cuenta. El set de prueba de Edge Impulse ya no sirve como prueba ciega, porque sus resultados ya se vieron.
 
 ## Consecuencias
 - La cadena clásica explica sus decisiones («borde del agujero dañado»); las redes no.

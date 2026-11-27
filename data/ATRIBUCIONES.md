@@ -8,6 +8,8 @@
 | Roboflow «Washer Defects» (MassMEP) | https://universe.roboflow.com/massmep/washer-defects-3usoj | CC BY 4.0 | No: pide cuenta, se baja a mano |
 | Kaggle «Simplified washers» (thibdx) | https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection | CC BY-SA 4.0 | No: pide cuenta, se baja a mano |
 
+`docs/figuras/e10_ejemplos.jpg` muestra 8 fotos reducidas de Edge Impulse. La licencia BSD 3-Clause Clear permite redistribuirlas si se reproduce su aviso de copyright y su texto de licencia. **Antes de pasar el repo a público**, agrega aquí ese texto copiado de la fuente.
+
 Cita sugerida por Edge Impulse:
 
 ```bibtex
