@@ -1,6 +1,6 @@
 # ADR 0014 · N1 v3: reabrir el enfoque con varios montajes
 
-**Estado:** propuesta, con el criterio fijado antes de correr · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Scripts:** `experimentos/e11_n1_v3.py` (elección) y `experimentos/e12_prueba_ciega_propia.py` (prueba ciega, por escribir)
+**Estado:** corrida (e11): **ningún candidato cumple el criterio**; la regla de respaldo eligió la fusión, que no se adopta. Lo que sigue va en el [ADR 0015](0015-n1-v4-opciones.md) · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Scripts:** `experimentos/e11_n1_v3.py` (elección) y la prueba ciega propia, por escribir (pasa a e13 si la v4 usa e12)
 
 ## Contexto
 En el montaje propio, la visión clásica detecta las 6 malas reales y gana a las redes ([ADR 0004](0004-n1-enfoque.md)). En la prueba ciega con fotos de otro laboratorio (e10, [ADR 0013](0013-datos-publicos.md)) eso no se sostiene: la clásica detecta 31 % de las malas y PatchCore 67 % (AUC 0,75 contra 0,95). La clásica no mide tamaño y no ve cortes radiales finos.
@@ -58,6 +58,40 @@ Si ninguno cumple 1 y 2, gana el de mayor detección media entre los que cumplen
 - **Por qué 25 y 25.** Si se detectan las 25 malas, el IC95 de la detección va de 86 % a 100 %; hoy, con 6 malas, va de 54 % a 100 %. Si no se retira ninguna de las 25 buenas, el IC95 de las falsas alarmas va de 0 % a 14 %.
 - **Sellado.** Camilo etiqueta cada foto al tomarla en un CSV (archivo, clase, defecto). Antes de correr nada, ese CSV y la huella SHA-256 de cada foto se suben en un commit propio. Ningún script lee esas fotos antes de ese commit.
 - **Una sola corrida** con lo elegido. Se informan los tres candidatos, como en e10, sea cual sea el resultado.
+
+## Resultado (e11, 27 nov 2026)
+Corrió en 13 minutos en la GTX 1060 de norea, con el código y el criterio del commit 1817ff9.
+
+| Candidato | Propias: malas (A) | Propias: falsas | Giros (R) | Sintéticas: malas | Kaggle: malas | Kaggle: falsas | EI: falsas (LOO) | ms CPU | Cumple 1 · 2 |
+|---|---|---|---|---|---|---|---|---|---|
+| clasica_v3_6 | 5/6 | 0/15 | 95 % | 300/300 | 39/100 | 14/100 | 8/273 | 25 | no · no |
+| clasica_v3_7 | 5/6 | 0/15 | 95 % | 300/300 | 49/100 | 19/100 | 9/273 | 26 | no · no |
+| PatchCore l2+l3, fijo | 4/6 | 1/15 | 71 % | 255/300 | 55/100 | 0/100 | 1/273 | 24 | no · sí |
+| PatchCore l2+l3, proporcional | 5/6 | 1/15 | 93 % | 255/300 | 25/100 | 0/100 | 1/273 | 24 | no · sí |
+| PatchCore l1+l2+l3, fijo | 5/6 | 0/15 | 81 % | 254/300 | 50/100 | 0/100 | 1/273 | 25 | no · sí |
+| PatchCore l1+l2+l3, proporcional | 5/6 | 0/15 | 86 % | 254/300 | 30/100 | 0/100 | 1/273 | 25 | no · sí |
+| *Fusión (v3_7 + l2+l3 fijo), por respaldo* | *5/6* | *1/15* | *95 %* | *300/300* | *76/100* | *19/100* | *10/273* | *45* | *no · no* |
+
+![N1 v3: malas detectadas y buenas retiradas por candidato](../figuras/e11_n1_v3.png)
+
+**Ninguno cumple.** Ninguno detecta las 6 malas propias, y ninguno junta mucha detección con pocas falsas alarmas en Kaggle.
+- **Las clásicas v3 pierden el 6/6 propio.** Con 6 o 7 rasgos y solo 14 buenas para calibrar, el umbral de Hotelling se afloja, y deja pasar una mala. El [ADR 0010](0010-p5-rasgos.md) ya advertía que cada rasgo extra cuesta con tan pocas buenas.
+- **En Kaggle, la mayoría de las falsas alarmas de la clásica son fallas de medición.** En los dibujos gris claro sobre blanco, la cadena no encuentra el agujero en 94 de las 1.000 buenas de calibración. De las 19 buenas de prueba que retira la clásica v3_7, 12 son buenas que no logró medir.
+- **PatchCore ordena muy bien, pero su umbral es demasiado prudente.** En Kaggle su AUC va de 0,96 a 0,98, pero solo detecta entre 25 y 55 de 100 malas, con 0 falsas. El umbral «el mayor puntaje de las buenas» pone el corte por encima de casi todo. Las 1/273 falsas en Edge Impulse salen así por construcción (ver los detalles de arriba).
+- **La regla de respaldo quedó débil.** Si ninguno cumple, elige por detección sin mirar las falsas alarmas. Por eso eligió la fusión, que detecta 76 de 100 en Kaggle pero retira 19 de 100 buenas. `decisiones.json` guarda `enfoque_v3 = fusion` con `ninguno_cumple = true`. No se adopta: el [ADR 0004](0004-n1-enfoque.md) sigue en revisión. El criterio no se cambia aquí, porque ya se vieron los resultados; la corrección va en el [ADR 0015](0015-n1-v4-opciones.md).
+- **La prueba ciega propia no se corre todavía.** Gastarla en un candidato que no cumple el criterio la desperdicia. Las 65 fotos quedan para la versión que cumpla.
+
+### Solo para informar: Edge Impulse de prueba (no ciego)
+Se corrió después de guardar la elección. Ya se había visto en e10, así que no decide nada.
+
+| Candidato | Malas (de 103) | Falsas (de 88) | AUC (IC95) | En e10 |
+|---|---|---|---|---|
+| clasica_v3_7 | 51 | 0 | 0,86 (0,80–0,91) | clásica de 4 rasgos: 32 y 1, AUC 0,75 |
+| PatchCore l2+l3, fijo | 69 | 3 | 0,95 (0,92–0,97) | el mismo: 69 y 3, AUC 0,95 |
+| PatchCore l1+l2+l3, proporcional | 88 | 2 | 0,98 (0,96–0,99) | — |
+| Fusión | 81 | 3 | 0,97 (0,95–0,99) | — |
+
+PatchCore l2+l3 fijo repite exactamente los números de e10, lo que sirve de control. El recorte proporcional ayuda en Edge Impulse, donde la golilla sale chica, pero perjudica en Kaggle (25 contra 55 malas). Esto no se usó para elegir nada.
 
 ## Lo que no se hace
 - Elegir algo mirando el set de prueba de Edge Impulse, Roboflow o el set ciego nuevo.

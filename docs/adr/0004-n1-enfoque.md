@@ -64,7 +64,7 @@ Con 191 fotos de otro laboratorio (Edge Impulse; detalle en el [ADR 0013](0013-d
 
 **La decisión no se cambia con esta prueba**, porque elegir con ella le quitaría lo ciego. Lo que sí cambia es lo que se puede afirmar: «la clásica gana» vale para el montaje propio y para defectos de forma, no en general.
 
-**Qué sigue (v3):** reabrir el N1 con PatchCore como candidato principal y una clásica con rasgos de tamaño (razón de radios y radio exterior). Se elige con varios montajes y se prueba con 50 fotos propias nuevas, porque Roboflow no trae golillas buenas y el set de prueba de Edge Impulse ya se vio. El plan y su criterio, fijados antes de correr, están en el [ADR 0014](0014-n1-v3-varios-montajes.md).
+**Qué sigue (v3):** reabrir el N1 con PatchCore como candidato principal y una clásica con rasgos de tamaño (razón de radios y radio exterior). Se elige con varios montajes y se prueba con 50 fotos propias nuevas, porque Roboflow no trae golillas buenas y el set de prueba de Edge Impulse ya se vio. El plan y su criterio, fijados antes de correr, están en el [ADR 0014](0014-n1-v3-varios-montajes.md). **Resultado (e11):** ningún candidato cumple. Las clásicas con más rasgos pierden el 6/6 propio, y PatchCore ordena bien pero su umbral es demasiado prudente. Esta decisión sigue en revisión, y las opciones para la v4 están en el [ADR 0015](0015-n1-v4-opciones.md).
 
 ## Consecuencias
 - La cadena clásica explica sus decisiones («borde del agujero dañado»); las redes no.

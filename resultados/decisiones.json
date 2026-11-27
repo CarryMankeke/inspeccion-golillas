@@ -103,5 +103,17 @@
       ]
     },
     "ms_mediana": 22.5
+  },
+  "enfoque_v3": {
+    "opcion": "fusion",
+    "criterio": "ADR 0014: 6/6 en A, ≥95 % en R y <100 ms; falsas ≤1/15 propias, ≤5 % Kaggle y ≤5 % EI (LOO); mayor detección media (Kaggle + sintéticas); empate ≤2 puntos → más explicable, más rápida",
+    "experimento": "e11",
+    "ninguno_cumple": true,
+    "A": "5/6",
+    "A_falsas": "1/15",
+    "R": 0.952,
+    "kaggle": 0.76,
+    "sint": 1.0,
+    "ms_cpu": 44.8
   }
 }
