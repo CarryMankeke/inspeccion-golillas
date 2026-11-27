@@ -1,0 +1,33 @@
+clasica_4 1 s
+clasica_v3_6 1 s
+clasica_v3_7 1 s
+patchcore_l2+l3_fijo 73 s
+patchcore_l2+l3_prop 144 s
+patchcore_l1+l2+l3_fijo 216 s
+patchcore_l1+l2+l3_prop 287 s
+latencias {'clasica_v3_6': 25.9, 'clasica_v3_7': 27.4, 'segmentacion': 5.0, 'red_patchcore_l2+l3_fijo': 20.2, 'patchcore_l2+l3_fijo': 25.2, 'red_patchcore_l2+l3_prop': 25.7, 'patchcore_l2+l3_prop': 30.6, 'red_patchcore_l1+l2+l3_fijo': 25.9, 'patchcore_l1+l2+l3_fijo': 30.9, 'red_patchcore_l1+l2+l3_prop': 26.8, 'patchcore_l1+l2+l3_prop': 31.8, 'clasica_4': 26.2}
+DECISIÓN enfoque_v4: fusion  (ADR 0015: umbral conformal partido (α = 3 %; α/2 por parte en la fusión; propio con las reglas de e11); 6/6 en A, ≥95 % en R y <100 ms; falsas ≤1/15 propias, ≤5 % Kaggle y ≤5 % en el tercio de EI; mayor detección media (Kaggle + sintéticas); empate ≤2 puntos → más explicable, más rápida; respaldo: cumple 2 → mayor detección, si no → menor tasa media de falsas; respaldo = no se adopta)
+                         A_malas  A_falsas  R_malas  sint_malas  sint_falsas  kaggle_malas  kaggle_falsas  ei_tercio_falsas  det_media  falsas_media  ms_cpu   req1   req2  elegido
+clasica_4                      6         0       42         300            8            35             14                 9      0.675         0.080  26.189   True  False    False
+clasica_v3_6                   5         0       40         300           10            35             10                10      0.675         0.070  25.864  False  False    False
+clasica_v3_7                   5         0       40         300            8            47             14                 3      0.735         0.058  27.381  False  False    False
+patchcore_l2+l3_fijo           4         1       30         257           10            86              0                 2      0.858         0.030  25.160  False   True    False
+patchcore_l2+l3_prop           5         1       39         256            9            81              3                 3      0.832         0.043  30.646  False   True    False
+patchcore_l1+l2+l3_fijo        5         0       34         257           12            87              0                 4      0.863         0.015  30.917  False   True    False
+patchcore_l1+l2+l3_prop        5         0       36         257           17            83              4                 9      0.843         0.046  31.820  False  False    False
+fusion                         5         1       40         300            8            81              5                 2      0.905         0.046  46.040  False   True     True
+elegido: fusion (respaldo: cumple 2, mayor detección media); control del montaje propio contra e11: igual
+Edge Impulse de prueba (NO CIEGO, solo informa):
+                         malas  n_malas  malas_lo  malas_hi  falsas  n_buenas  falsas_lo  falsas_hi    auc  auc_lo  auc_hi  no_ciego
+candidato                                                                                                                           
+clasica_4                   36      103     0.258     0.450       0        88      0.000      0.041  0.745   0.671   0.810      True
+clasica_v3_6                48      103     0.367     0.567       0        88      0.000      0.041  0.815   0.749   0.873      True
+clasica_v3_7                47      103     0.358     0.557       0        88      0.000      0.041  0.873   0.820   0.920      True
+patchcore_l2+l3_fijo        78      103     0.663     0.836      12        88      0.072      0.226  0.920   0.882   0.952      True
+patchcore_l2+l3_prop        96      103     0.865     0.972      20        88      0.145      0.329  0.966   0.942   0.984      True
+patchcore_l1+l2+l3_fijo     85      103     0.738     0.893      19        88      0.135      0.316  0.915   0.876   0.950      True
+patchcore_l1+l2+l3_prop     99      103     0.904     0.989      10        88      0.056      0.199  0.982   0.965   0.994      True
+fusion                      79      103     0.673     0.845      11        88      0.064      0.213  0.932   0.899   0.960      True
+findfont: Failed to find font weight medium for DejaVu Sans, now using 400.
+  → e12_n1_v4.png
+  → e12_umbral_kaggle.png

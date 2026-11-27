@@ -115,5 +115,21 @@
     "kaggle": 0.76,
     "sint": 1.0,
     "ms_cpu": 44.8
+  },
+  "enfoque_v4": {
+    "opcion": "fusion",
+    "criterio": "ADR 0015: umbral conformal partido (α = 3 %; α/2 por parte en la fusión; propio con las reglas de e11); 6/6 en A, ≥95 % en R y <100 ms; falsas ≤1/15 propias, ≤5 % Kaggle y ≤5 % en el tercio de EI; mayor detección media (Kaggle + sintéticas); empate ≤2 puntos → más explicable, más rápida; respaldo: cumple 2 → mayor detección, si no → menor tasa media de falsas; respaldo = no se adopta",
+    "experimento": "e12",
+    "ninguno_cumple": true,
+    "adoptado": false,
+    "via": "respaldo: cumple 2, mayor detección media",
+    "A": "5/6",
+    "A_falsas": "1/15",
+    "R": 0.952,
+    "kaggle": 0.81,
+    "kaggle_falsas": 0.05,
+    "ei_tercio_falsas": "2/91",
+    "sint": 1.0,
+    "ms_cpu": 46.0
   }
 }

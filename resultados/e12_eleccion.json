@@ -1,0 +1,103 @@
+{
+ "elegido": "fusion",
+ "ninguno_cumple": true,
+ "adoptado": false,
+ "via": "respaldo: cumple 2, mayor detección media",
+ "alfa": 0.03,
+ "clasica_de_familia": "clasica_v3_6",
+ "via_clasica": "respaldo: ninguno cumple 2, menor tasa media de falsas",
+ "patchcore_de_familia": "patchcore_l2+l3_fijo",
+ "via_patchcore": "respaldo: cumple 2, mayor detección media",
+ "particion": {
+  "sintetico": {
+   "ajusta": 150,
+   "calibra": 150,
+   "mide": 0
+  },
+  "kaggle": {
+   "ajusta": 500,
+   "calibra": 500,
+   "mide": 0
+  },
+  "ei": {
+   "ajusta": 91,
+   "calibra": 91,
+   "mide": 91
+  }
+ },
+ "beta_condicional": {
+  "sintetico": {
+   "alfa": {
+    "n": 150,
+    "ell": 4,
+    "media": 0.026490066225165563,
+    "p05": 0.009158928473111375,
+    "p95": 0.050877067978523934,
+    "p_sobre_5": 0.054769809130829385
+   },
+   "alfa_2": {
+    "n": 150,
+    "ell": 2,
+    "media": 0.013245033112582781,
+    "p05": 0.002374192077553908,
+    "p95": 0.03123381692094287,
+    "p_sobre_5": 0.004052041615144136
+   }
+  },
+  "kaggle": {
+   "alfa": {
+    "n": 500,
+    "ell": 15,
+    "media": 0.029940119760479042,
+    "p05": 0.018581564717314803,
+    "p95": 0.04342734347331628,
+    "p_sobre_5": 0.010812459496288613
+   },
+   "alfa_2": {
+    "n": 500,
+    "ell": 7,
+    "media": 0.013972055888223553,
+    "p05": 0.006588568222776067,
+    "p95": 0.023546585483971323,
+    "p_sobre_5": 4.17423557891127e-06
+   }
+  },
+  "ei": {
+   "alfa": {
+    "n": 91,
+    "ell": 2,
+    "media": 0.021739130434782608,
+    "p05": 0.003919014097643159,
+    "p95": 0.05107020179087157,
+    "p_sobre_5": 0.05438600590312444
+   },
+   "alfa_2": {
+    "n": 91,
+    "ell": 1,
+    "media": 0.010869565217391304,
+    "p05": 0.0005635037477809372,
+    "p95": 0.032384164736434434,
+    "p_sobre_5": 0.009393946474176039
+   }
+  }
+ },
+ "control_propio_e11": "igual",
+ "k": 3.209408634353316,
+ "ms": {
+  "clasica_v3_6": 25.863886350998655,
+  "clasica_v3_7": 27.38117319822777,
+  "segmentacion": 4.983605848974548,
+  "red_patchcore_l2+l3_fijo": 20.175897795706987,
+  "patchcore_l2+l3_fijo": 25.159503644681536,
+  "red_patchcore_l2+l3_prop": 25.662028801161796,
+  "patchcore_l2+l3_prop": 30.645634650136344,
+  "red_patchcore_l1+l2+l3_fijo": 25.933075603097677,
+  "patchcore_l1+l2+l3_fijo": 30.916681452072226,
+  "red_patchcore_l1+l2+l3_prop": 26.836589397862554,
+  "patchcore_l1+l2+l3_prop": 31.820195246837102,
+  "clasica_4": 26.188706650282256,
+  "fusion": 46.03978414670564
+ },
+ "dispositivo": "NVIDIA GeForce GTX 1060 6GB",
+ "minutos": 5.0
+}

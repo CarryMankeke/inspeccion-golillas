@@ -384,7 +384,7 @@ def figuras(T, info):
              ["e11", "e12"], colores=[GRIS, AZUL], fmt="{:.0f}", lim=(0, 118), leyenda=False)
     axs[1].axvline(5, color=TINTA2, lw=0.8, ls=":")
     axs[1].set_title("Kaggle: buenas retiradas por error (%, de 100) · línea: tope del 5 %", fontsize=10)
-    fig.suptitle("Mismo modelo, otro umbral: qué cambia en Kaggle de e11 a e12", x=0.01, ha="left", fontsize=12,
+    fig.suptitle("Misma configuración, otro umbral: qué cambia en Kaggle de e11 a e12", x=0.01, ha="left", fontsize=12,
                  y=1.02)
     guardar(fig, f"e12_umbral_kaggle{SUF}.png")
 

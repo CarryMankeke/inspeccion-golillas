@@ -1,6 +1,6 @@
 # ADR 0015 · N1 v4: opciones después de e11, y el plan de la v4
 
-**Estado:** propuesta, con el criterio fijado antes de correr · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Script:** `experimentos/e12_n1_v4.py` (escrito; la prueba ciega propia pasa a e13)
+**Estado:** corrida (e12): **ningún candidato cumple el criterio**; la regla de respaldo eligió la fusión (clasica_v3_6 + PatchCore l2+l3 fijo), que no se adopta · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Script:** `experimentos/e12_n1_v4.py` (la prueba ciega propia pasa a e13)
 
 ## Contexto
 En la v3 (e11, [ADR 0014](0014-n1-v3-varios-montajes.md)) ningún candidato cumplió el criterio. Hay tres causas, y las tres están medidas:
@@ -72,6 +72,51 @@ Lo que dice la literatura y cambia el plan:
 
 ## Qué cambia en el set ciego propio
 Para que el umbral conformal funcione también en el montaje propio, la sesión de fotos del [ADR 0014](0014-n1-v3-varios-montajes.md) pasa de 15 a **50 buenas de calibración**: 16 ajustan (banco y covarianza) y 34 calibran el umbral, una más que el mínimo de 33 para α = 3 %. El total sube a 100 fotos: 50 que calibran, más 25 buenas y 25 malas de prueba. Esas fotos siguen sin tomarse, así que el cambio no compromete la prueba ciega.
+
+## Resultado (e12, 27 nov 2026)
+Corrió en 5 minutos en la GTX 1060 de norea, con el código y el criterio del commit 501c8c2. Entre paréntesis va el IC95 exacto, en %.
+
+| Candidato | Propias: malas (A) | Propias: falsas | Giros (R) | Sintéticas: malas | Sintéticas: falsas | Kaggle: malas | Kaggle: falsas | EI, tercio: falsas | ms CPU | Cumple 1 · 2 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| clasica_4 | 6/6 (54–100) | 0/15 (0–22) | 100 % | 300/300 (99–100) | 8/300 (1–5) | 35/100 (26–45) | 14/100 (8–22) | 9/91 (5–18) | 26 | sí · no |
+| clasica_v3_6 | 5/6 (36–100) | 0/15 (0–22) | 95 % | 300/300 (99–100) | 10/300 (2–6) | 35/100 (26–45) | 10/100 (5–18) | 10/91 (5–19) | 26 | no · no |
+| clasica_v3_7 | 5/6 (36–100) | 0/15 (0–22) | 95 % | 300/300 (99–100) | 8/300 (1–5) | 47/100 (37–57) | 14/100 (8–22) | 3/91 (1–9) | 27 | no · no |
+| PatchCore l2+l3, fijo | 4/6 (22–96) | 1/15 (0–32) | 71 % | 257/300 (81–89) | 10/300 (2–6) | 86/100 (78–92) | 0/100 (0–4) | 2/91 (0–8) | 25 | no · sí |
+| PatchCore l2+l3, proporcional | 5/6 (36–100) | 1/15 (0–32) | 93 % | 256/300 (81–89) | 9/300 (1–6) | 81/100 (72–88) | 3/100 (1–9) | 3/91 (1–9) | 31 | no · sí |
+| PatchCore l1+l2+l3, fijo | 5/6 (36–100) | 0/15 (0–22) | 81 % | 257/300 (81–89) | 12/300 (2–7) | 87/100 (79–93) | 0/100 (0–4) | 4/91 (1–11) | 31 | no · sí |
+| PatchCore l1+l2+l3, proporcional | 5/6 (36–100) | 0/15 (0–22) | 86 % | 257/300 (81–89) | 17/300 (3–9) | 83/100 (74–90) | 4/100 (1–10) | 9/91 (5–18) | 32 | no · no |
+| *Fusión (v3_6 + l2+l3 fijo), por respaldo* | *5/6 (36–100)* | *1/15 (0–32)* | *95 %* | *300/300 (99–100)* | *8/300 (1–5)* | *81/100 (72–88)* | *5/100 (2–11)* | *2/91 (0–8)* | *46* | *no · sí* |
+
+![N1 v4: malas detectadas y buenas retiradas por candidato](../figuras/e12_n1_v4.png)
+
+**Ninguno cumple.** La regla de respaldo eligió la fusión de clasica_v3_6 con PatchCore l2+l3 fijo, cada una con su umbral de α/2. La fusión cumple el requisito 2 (1/15, 5/100 y 2/91), pero detecta 5 de las 6 malas propias. No se adopta, y el [ADR 0004](0004-n1-enfoque.md) sigue en revisión. `decisiones.json` guarda `enfoque_v4 = fusion` con `ninguno_cumple = true` y `adoptado = false`. Dentro de cada familia, la clásica salió por la tasa media de falsas más baja (ninguna cumple el requisito 2), y PatchCore por la mayor detección entre los que cumplen el 2 (empate con l1+l2+l3 fijo, que es más lento).
+
+Qué se aprende:
+- **El umbral conformal arregla lo que tenía que arreglar.** Con la misma configuración, PatchCore pasa de 25–55 a 81–87 malas de 100 en Kaggle, y retira de 0 a 4 de 100 buenas. El orden casi no cambia (AUC 0,96–0,98, como en e11): lo que cambia es el corte. En PatchCore l2+l3 fijo, el umbral baja de 3,72 (el máximo de las buenas) a 2,89. Ojo: e12 ajusta con 500 buenas de Kaggle y e11 con 1.000.
+
+![Kaggle: el umbral de e11 contra el conformal](../figuras/e12_umbral_kaggle.png)
+
+- **Ahora lo que bloquea es el montaje propio.** Con 15 buenas no existe un umbral conformal del 3 %, así que ahí siguen las reglas de e11, y ningún PatchCore pasa de 5/6. El control lo confirma: en las fotos propias, los 6 candidatos de e11 repiten exactamente sus números. Solo clasica_4 detecta las 6, pero retira 14 de 100 buenas en Kaggle (5 que no logra medir) y 9 de 91 en Edge Impulse.
+- **La clásica sigue sin trasladarse.** En Kaggle detecta entre 35 y 47 de 100 malas, y su cadena no logra medir entre 50 y 88 de las 500 buenas que calibran.
+- **Donde las buenas son intercambiables, la tasa queda cerca de α.** En las sintéticas, las que calibran y las que miden salen del mismo generador, y se retiran entre 8 y 17 de 300 buenas (2,7–5,7 %). Con 150 buenas que calibran, la tasa de una calibración sigue una Beta(4, 147), con percentil 95 de 5,1 %. La excepción es la clásica en el tercio de Edge Impulse: retira 9–10 de 91. De las 9 de clasica_4, 7 son de fondo blanco, y en el tercio que calibró solo 1 buena quedó sobre el umbral. Con una sola partición no se puede separar la mala suerte de la mezcla de dos fondos; la opción 6 apunta a eso.
+- **La garantía no pasa de un lote a otro.** Solo para informar (no ciego): en el set de prueba de Edge Impulse, PatchCore retira entre 10 y 20 de 88 buenas (11–23 %), lejos del 3 %. Esas buenas salen más chicas en la foto que las de entrenamiento (radio equivalente mediano de 45,6 px contra 49,3 px), así que son otro lote. Es lo que advertía la literatura: un umbral calibrado en un lote no vale para otro.
+
+### Solo para informar: Edge Impulse de prueba (no ciego)
+Se corrió después de guardar la elección, con el modelo del tercio que ajusta y el umbral del tercio que calibra. No decide nada.
+
+| Candidato | Malas (de 103) | Falsas (de 88) | AUC (IC95) |
+|---|---|---|---|
+| clasica_4 | 36 (26–45 %) | 0 (0–4 %) | 0,75 (0,67–0,81) |
+| clasica_v3_6 | 48 (37–57 %) | 0 (0–4 %) | 0,82 (0,75–0,87) |
+| clasica_v3_7 | 47 (36–56 %) | 0 (0–4 %) | 0,87 (0,82–0,92) |
+| PatchCore l2+l3, fijo | 78 (66–84 %) | 12 (7–23 %) | 0,92 (0,88–0,95) |
+| PatchCore l2+l3, proporcional | 96 (86–97 %) | 20 (14–33 %) | 0,97 (0,94–0,98) |
+| PatchCore l1+l2+l3, fijo | 85 (74–89 %) | 19 (14–32 %) | 0,92 (0,88–0,95) |
+| PatchCore l1+l2+l3, proporcional | 99 (90–99 %) | 10 (6–20 %) | 0,98 (0,96–0,99) |
+| Fusión (v3_6 + l2+l3 fijo) | 79 (67–84 %) | 11 (6–21 %) | 0,93 (0,90–0,96) |
+
+### Lo que sigue
+La v4 confirma que el umbral era la falla de PatchCore. Lo que queda ya no depende del método: el requisito 1 se mide con 15 buenas propias, y con eso no hay umbral conformal. Hipótesis (**no verificada**): con 34 buenas propias o más que calibren, PatchCore pasaría de 5/6, como pasó en Kaggle. La v5 va en un ADR nuevo, con su criterio fijado antes de correr, y su primer paso es una sesión de fotos propias. El modelo jerárquico en PyMC y anomalib con `metal_nut` siguen como opciones para después.
 
 ## Lo que no se hace
 - Cambiar el criterio del [ADR 0014](0014-n1-v3-varios-montajes.md) después de ver e11. La v4 es un ADR nuevo, con su propio criterio.

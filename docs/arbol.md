@@ -21,7 +21,7 @@ flowchart TD
     C --> D["Datos: 21 fotos reales + generador sintético<br/>ADR 0005"]
     D -.-> DP["Prueba ciega con fotos ajenas (e10)<br/>clásica 31 %, PatchCore 67 %<br/>ADR 0013"]
     DP -.-> V3["N1 v3 (e11): varios montajes<br/>ningún candidato cumple<br/>ADR 0014"]
-    V3 -.-> V4["N1 v4 (propuesta): umbral conformal<br/>y regla que respeta las falsas alarmas<br/>ADR 0015"]
+    V3 -.-> V4["N1 v4 (e12): umbral conformal<br/>PatchCore 86/100 en Kaggle, 0 falsas<br/>ningún candidato cumple · ADR 0015"]
     C --> P1["P1 Preprocesado<br/>★ dividir por el fondo<br/>ADR 0006"]
     P1 --> P2["P2 Segmentación<br/>★ Otsu<br/>ADR 0007"]
     P2 --> P3["P3 Bordes<br/>★ subpíxel por gradiente<br/>ADR 0008"]
