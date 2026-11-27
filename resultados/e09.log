@@ -1,0 +1,59 @@
+recortes listos en 111 s
+{'enfoque': 'clasica', 'config': 'mahalanobis_hotelling', 'A_deteccion': 1.0, 'A_falsas': 0.0, 'A_auc': 1.0, 'A_auc_lo': np.float64(1.0), 'A_auc_hi': np.float64(1.0), 'R_deteccion': 1.0, 'R_falsas': 0.0, 'R_auc': 1.0, 'B_deteccion': 1.0, 'B_falsas': 1.0, 'B_auc': 0.9777777777777777, 'C_deteccion': 1.0, 'C_falsas': 0.03, 'C_auc': 0.9959, 'ms_cpu': np.float64(36.28532351285685), 'ms_gpu': nan}
+{'red': 'supervisada', 'config': 'lr=0.0001, 10 épocas', 'lr': 0.0001, 'epocas': 10, 'auc_val': 0.9980333333333333, 'perdida_val': 0.04052190942842079} 57 s
+{'red': 'supervisada', 'config': 'lr=0.0001, 20 épocas', 'lr': 0.0001, 'epocas': 20, 'auc_val': 0.9991888888888889, 'perdida_val': 0.03130093913349545} 57 s
+{'red': 'supervisada', 'config': 'lr=0.0003, 10 épocas', 'lr': 0.0003, 'epocas': 10, 'auc_val': 0.9984333333333333, 'perdida_val': 0.03474991288880631} 114 s
+{'red': 'supervisada', 'config': 'lr=0.0003, 20 épocas', 'lr': 0.0003, 'epocas': 20, 'auc_val': 0.9992444444444445, 'perdida_val': 0.035599750850707323} 114 s
+{'red': 'supervisada', 'config': 'lr=0.001, 10 épocas', 'lr': 0.001, 'epocas': 10, 'auc_val': 0.9973444444444445, 'perdida_val': 0.1291320135367107} 171 s
+{'red': 'supervisada', 'config': 'lr=0.001, 20 épocas', 'lr': 0.001, 'epocas': 20, 'auc_val': 0.9957222222222222, 'perdida_val': 0.08617488710697443} 172 s
+{'enfoque': 'red_supervisada', 'config': 'lr=0.0001, 20 épocas + ajuste fino con reales', 'A_deteccion': 0.8333333333333334, 'A_falsas': 0.0, 'A_auc': 1.0, 'A_auc_lo': np.float64(1.0), 'A_auc_hi': np.float64(1.0), 'R_deteccion': 0.8333333333333334, 'R_falsas': 0.0, 'R_auc': 0.9861678004535147, 'B_deteccion': 0.8333333333333334, 'B_falsas': 0.06666666666666667, 'B_auc': 0.9888888888888889, 'C_deteccion': 0.98, 'C_falsas': 0.006666666666666667, 'C_auc': 0.9990666666666667, 'ms_gpu': 3.0263808032032102, 'ms_cpu': 21.100386697798967}
+supervisada: 5.5 min
+{'red': 'patchcore', 'config': 'l2+l3, coreset 100%', 'capas': 'l2+l3', 'coreset': 1.0, 'auc_val': 0.9405555555555556, 'n_banco_sint': 250880} 58 s
+{'red': 'patchcore', 'config': 'l2+l3, coreset 10%', 'capas': 'l2+l3', 'coreset': 0.1, 'auc_val': 0.9392777777777778, 'n_banco_sint': 25088} 175 s
+{'red': 'patchcore', 'config': 'l2+l3, coreset 1%', 'capas': 'l2+l3', 'coreset': 0.01, 'auc_val': 0.9416, 'n_banco_sint': 2508} 188 s
+{'red': 'patchcore', 'config': 'l1+l2+l3, coreset 100%', 'capas': 'l1+l2+l3', 'coreset': 1.0, 'auc_val': 0.9401888888888889, 'n_banco_sint': 250880} 252 s
+{'red': 'patchcore', 'config': 'l1+l2+l3, coreset 10%', 'capas': 'l1+l2+l3', 'coreset': 0.1, 'auc_val': 0.9383888888888889, 'n_banco_sint': 25088} 369 s
+{'red': 'patchcore', 'config': 'l1+l2+l3, coreset 1%', 'capas': 'l1+l2+l3', 'coreset': 0.01, 'auc_val': 0.9359333333333333, 'n_banco_sint': 2508} 382 s
+{'red': 'patchcore', 'config': 'l2+l3, coreset 100%', 'capas': 'l2+l3', 'coreset': 1.0, 'auc_val': 0.9405555555555556, 'n_banco_sint': 250880, 'A_deteccion': 0.8333333333333334, 'A_falsas': 0.06666666666666667, 'A_auc': 0.9777777777777777, 'R_deteccion': 0.8571428571428571, 'R_falsas': 0.0761904761904762, 'R_auc': 0.9764172335600907, 'elegida': False} 401 s
+{'red': 'patchcore', 'config': 'l2+l3, coreset 10%', 'capas': 'l2+l3', 'coreset': 0.1, 'auc_val': 0.9392777777777778, 'n_banco_sint': 25088, 'A_deteccion': 0.8333333333333334, 'A_falsas': 0.06666666666666667, 'A_auc': 0.9777777777777777, 'R_deteccion': 0.8809523809523809, 'R_falsas': 0.08571428571428572, 'R_auc': 0.9782312925170068, 'elegida': False} 703 s
+{'enfoque': 'anomalias_red', 'config': 'l2+l3, coreset 1%, umbral por LOO interno', 'A_deteccion': 0.6666666666666666, 'A_falsas': 0.06666666666666667, 'A_auc': 0.9555555555555556, 'A_auc_lo': np.float64(0.8333333333333334), 'A_auc_hi': np.float64(1.0), 'R_deteccion': 0.7142857142857143, 'R_falsas': 0.05714285714285714, 'R_auc': 0.9639455782312926, 'C_deteccion': 0.84, 'C_falsas': 0.03333333333333333, 'C_auc': 0.9323666666666667, 'n_banco_real': 940, 'ms_gpu': 2.3271167010534555, 'ms_cpu': 18.02643840201199}
+{'red': 'patchcore', 'config': 'l2+l3, coreset 1%', 'capas': 'l2+l3', 'coreset': 0.01, 'auc_val': 0.9416, 'n_banco_sint': 2508, 'A_deteccion': 0.6666666666666666, 'A_falsas': 0.06666666666666667, 'A_auc': 0.9555555555555556, 'R_deteccion': 0.7142857142857143, 'R_falsas': 0.05714285714285714, 'R_auc': 0.9639455782312926, 'elegida': True} 752 s
+{'red': 'patchcore', 'config': 'l1+l2+l3, coreset 100%', 'capas': 'l1+l2+l3', 'coreset': 1.0, 'auc_val': 0.9401888888888889, 'n_banco_sint': 250880, 'A_deteccion': 0.8333333333333334, 'A_falsas': 0.0, 'A_auc': 0.9888888888888889, 'R_deteccion': 0.8571428571428571, 'R_falsas': 0.05714285714285714, 'R_auc': 0.9841269841269841, 'elegida': False} 773 s
+{'red': 'patchcore', 'config': 'l1+l2+l3, coreset 10%', 'capas': 'l1+l2+l3', 'coreset': 0.1, 'auc_val': 0.9383888888888889, 'n_banco_sint': 25088, 'A_deteccion': 0.8333333333333334, 'A_falsas': 0.0, 'A_auc': 0.9888888888888889, 'R_deteccion': 0.7857142857142857, 'R_falsas': 0.05714285714285714, 'R_auc': 0.9750566893424036, 'elegida': False} 1075 s
+{'red': 'patchcore', 'config': 'l1+l2+l3, coreset 1%', 'capas': 'l1+l2+l3', 'coreset': 0.01, 'auc_val': 0.9359333333333333, 'n_banco_sint': 2508, 'A_deteccion': 0.8333333333333334, 'A_falsas': 0.0, 'A_auc': 0.9777777777777777, 'R_deteccion': 0.8095238095238095, 'R_falsas': 0.05714285714285714, 'R_auc': 0.9680272108843537, 'elegida': False} 1109 s
+patchcore: 18.5 min
+DECISIÓN enfoque: clasica  (100 % de malas reales detectadas (A y giros R); luego menos falsas alarmas; empate → más rápida en CPU (e09: redes con ajuste justo))
+findfont: Failed to find font weight medium for DejaVu Sans, now using 400.
+  → e09_enfoques.png
+  → e09_busqueda.png
+enfoque       clasica  red_supervisada  anomalias_red
+A_deteccion     1.000            0.833          0.667
+A_falsas        0.000            0.000          0.067
+A_auc           1.000            1.000          0.956
+A_auc_lo        1.000            1.000          0.833
+A_auc_hi        1.000            1.000          1.000
+R_deteccion     1.000            0.833          0.714
+R_falsas        0.000            0.000          0.057
+R_auc           1.000            0.986          0.964
+B_deteccion     1.000            0.833            NaN
+B_falsas        1.000            0.067            NaN
+B_auc           0.978            0.989            NaN
+C_deteccion     1.000            0.980          0.840
+C_falsas        0.030            0.007          0.033
+C_auc           0.996            0.999          0.932
+ms_cpu         36.285           21.100         18.026
+ms_gpu            NaN            3.026          2.327
+n_banco_real      NaN              NaN        940.000
+            red                  config     lr  epocas  auc_val  perdida_val  A_deteccion  A_falsas  A_auc  R_deteccion  R_falsas  R_auc  B_deteccion  B_falsas  B_auc  elegida     capas  coreset  n_banco_sint
+0   supervisada    lr=0.0001, 10 épocas  0.000    10.0    0.998        0.041        1.000     0.000  1.000        0.857     0.048  0.980        1.000     0.000  1.000    False       NaN      NaN           NaN
+1   supervisada    lr=0.0001, 20 épocas  0.000    20.0    0.999        0.031        0.833     0.000  1.000        0.833     0.000  0.986        0.833     0.067  0.989     True       NaN      NaN           NaN
+2   supervisada    lr=0.0003, 10 épocas  0.000    10.0    0.998        0.035        1.000     0.000  1.000        0.857     0.095  0.963        1.000     0.000  1.000    False       NaN      NaN           NaN
+3   supervisada    lr=0.0003, 20 épocas  0.000    20.0    0.999        0.036        0.833     0.000  1.000        0.833     0.029  0.982        0.833     0.000  1.000    False       NaN      NaN           NaN
+4   supervisada     lr=0.001, 10 épocas  0.001    10.0    0.997        0.129        1.000     0.067  0.978        0.857     0.181  0.932        1.000     0.400  0.978    False       NaN      NaN           NaN
+5   supervisada     lr=0.001, 20 épocas  0.001    20.0    0.996        0.086        0.833     0.067  0.967        0.810     0.086  0.965        1.000     0.200  0.989    False       NaN      NaN           NaN
+6     patchcore     l2+l3, coreset 100%    NaN     NaN    0.941          NaN        0.833     0.067  0.978        0.857     0.076  0.976          NaN       NaN    NaN    False     l2+l3     1.00      250880.0
+7     patchcore      l2+l3, coreset 10%    NaN     NaN    0.939          NaN        0.833     0.067  0.978        0.881     0.086  0.978          NaN       NaN    NaN    False     l2+l3     0.10       25088.0
+8     patchcore       l2+l3, coreset 1%    NaN     NaN    0.942          NaN        0.667     0.067  0.956        0.714     0.057  0.964          NaN       NaN    NaN     True     l2+l3     0.01        2508.0
+9     patchcore  l1+l2+l3, coreset 100%    NaN     NaN    0.940          NaN        0.833     0.000  0.989        0.857     0.057  0.984          NaN       NaN    NaN    False  l1+l2+l3     1.00      250880.0
+10    patchcore   l1+l2+l3, coreset 10%    NaN     NaN    0.938          NaN        0.833     0.000  0.989        0.786     0.057  0.975          NaN       NaN    NaN    False  l1+l2+l3     0.10       25088.0
+11    patchcore    l1+l2+l3, coreset 1%    NaN     NaN    0.936          NaN        0.833     0.000  0.978        0.810     0.057  0.968          NaN       NaN    NaN    False  l1+l2+l3     0.01        2508.0

@@ -16,9 +16,10 @@ flowchart TD
     N0 --> B["N1 · Línea base: reglas del MATLAB original<br/>21/21 en sus fotos, 38 % de falsas fuera<br/>ADR 0003"]
     N0 --> E{"N1 · Enfoque<br/>ADR 0004"}
     E -->|"6/6 malas reales · 36 ms en CPU"| C["Visión clásica ★"]
-    E -.->|"5/6"| RS["Red supervisada (ResNet-18)"]
-    E -.->|"4/6"| PC["Anomalías con red (PatchCore)"]
+    E -.->|"5/6 · AUC 1,0 (e09)"| RS["Red supervisada (ResNet-18)"]
+    E -.->|"4/6 · AUC 0,96 (e09)"| PC["Anomalías con red (PatchCore)"]
     C --> D["Datos: 21 fotos reales + generador sintético<br/>ADR 0005"]
+    D -.-> DP["Prueba ciega con datos públicos<br/>(propuesta) ADR 0013"]
     C --> P1["P1 Preprocesado<br/>★ dividir por el fondo<br/>ADR 0006"]
     P1 --> P2["P2 Segmentación<br/>★ Otsu<br/>ADR 0007"]
     P2 --> P3["P3 Bordes<br/>★ subpíxel por gradiente<br/>ADR 0008"]

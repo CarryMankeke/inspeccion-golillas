@@ -10,3 +10,5 @@ cache/
 # estado local de Obsidian (la config compartida sí va)
 docs/.obsidian/workspace*.json
 docs/.obsidian/cache
+# datasets públicos: se bajan con scripts/descargar_datos.py, no se suben
+data/publico/

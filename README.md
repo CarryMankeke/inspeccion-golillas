@@ -38,9 +38,9 @@ Los 4 números de forma son: cuánto material falta o sobra en el anillo, cuánt
 El diseño va de lo general a lo particular: primero el objetivo (N0), luego el enfoque (N1), luego los pasos (N2) y, en cada paso, todas las técnicas candidatas probadas con los mismos datos (N3). Cada decisión tiene un registro corto (ADR) con su tabla y su gráfico.
 
 - **Contra qué se compara.** Las reglas del proyecto MATLAB original acertaban 21/21, pero en las mismas fotos con que se ajustaron. Con fotos que no habían visto, detectan 5 de 6 malas y retiran 38 % de las buenas sintéticas ([ADR 0003](docs/adr/0003-n1-linea-base-matlab.md)).
-- **Clásica o red neuronal.** Con solo 21 fotos reales, la visión clásica detecta 6/6 malas; una red ResNet-18 ajustada detecta 5/6, y una de detección de anomalías, 4/6 ([ADR 0004](docs/adr/0004-n1-enfoque.md)).
+- **Clásica o red neuronal.** Con solo 21 fotos reales, la visión clásica detecta 6/6 malas. Las redes recibieron un ajuste justo: hiperparámetros elegidos con sintéticas de validación, PatchCore con coreset. Aun así, la red ResNet-18 detecta 5/6 y la de anomalías 4/6. La red ResNet-18 ordena tan bien como la clásica (AUC 1,0): lo que le falla es el umbral ([ADR 0004](docs/adr/0004-n1-enfoque.md)).
 
-![Clásica contra redes neuronales](docs/figuras/e08_enfoques.png)
+![Clásica contra redes neuronales con ajuste justo](docs/figuras/e09_enfoques.png)
 
 El árbol completo, con las 68 opciones probadas en los 7 pasos, está en [docs/arbol.md](docs/arbol.md).
 
@@ -87,11 +87,13 @@ El glosario completo está en [docs/glosario.md](docs/glosario.md).
 golillas/            el paquete: preproceso, segmentacion, bordes, medicion, rasgos,
                      decision, inspector (la cadena final), linea (simulador), sintetico
 golillas/calibracion.json   decisión final calibrada con las 15 buenas reales
-experimentos/        un script por decisión (e00–e08); cada uno escribe su CSV y su gráfico
+experimentos/        un script por decisión (e00–e09); cada uno escribe su CSV y su gráfico
+scripts/             descarga de datasets públicos (con huella; las imágenes no se suben)
 resultados/          CSV de cada experimento y decisiones.json (lo que ganó y con qué criterio)
 docs/                ADR, árbol y glosario; se abre como bóveda de Obsidian
 docs/figuras/        gráficos generados por los experimentos
 data/real/           21 fotos (15 buenas, 6 malas) y etiquetas.csv
+data/ATRIBUCIONES.md licencias y citas de los datos
 tests/               pruebas: medición, generador, inspector y simulador
 ```
 
@@ -109,6 +111,7 @@ Cada script reutiliza su CSV si existe; con `--recalcular` vuelve a medir desde 
 | `e07_linea.py` | P7, gráficos y GIF de la línea |
 | `e00_linea_base_matlab.py` | línea base MATLAB |
 | `e08_enfoques.py` | N1: clásica contra redes (necesita `pip install -e ".[red]"`; con GPU tarda unos 3 min) |
+| `e09_ajuste_redes.py` | N1 revisado: redes con ajuste justo y AUC; reescribe la decisión "enfoque" (GTX 1060: unos 25 min) |
 | `portada.py` | la imagen del inicio de este README |
 
 ### Decisiones y métricas clave
@@ -125,15 +128,15 @@ Cada script reutiliza su CSV si existe; con `--recalcular` vuelve a medir desde 
 ### Limitaciones y próximos pasos
 Lo que hoy limita los resultados:
 - **Pocas fotos reales y sin prueba ciega.** Las 21 fotos se usaron para elegir y para informar (6 malas; IC95 54–100 %).
-- **Redes sin ajuste justo.** En el N1, las redes corrieron con hiperparámetros fijos y entrenadas con 20 fotos; "la clásica gana" vale en ese marco ([ADR 0004](docs/adr/0004-n1-enfoque.md)).
+- **El umbral de las redes y la validación sintética.** Con ajuste justo (e09), la red supervisada ordena perfecto, pero su umbral fijo de 0,5 deja pasar 1 de 6 malas. Además, la validación sintética no distingue entre configuraciones: todas dan un AUC de 0,996 a 0,999 ([ADR 0004](docs/adr/0004-n1-enfoque.md)).
 - **Una configuración por técnica.** Cada técnica de la cadena clásica corrió con una sola configuración, y se eligió proceso a proceso, sin probar de punta a punta las 2 mejores de cada paso.
 - La línea es simulada: la oscilación de la cinta, el resbalamiento y los retardos son supuestos.
 - El generador sintético no imita bien la textura del metal ([ADR 0005](docs/adr/0005-datos-sinteticos.md)).
 - El port de las reglas MATLAB no se verificó contra MATLAB.
 
 Próximos pasos (versión 2):
-1. Sumar un dataset público de golillas con licencia abierta. Su parte real queda como prueba ciega, sin usarla para elegir nada.
-2. Ajuste justo de las redes (e09): preentrenar con sintéticas, buscar hiperparámetros en validación sintética, PatchCore con coreset, e informar el AUC.
+1. Prueba ciega con datasets públicos: Edge Impulse «Flat washers» (103 malas reales), CSEM-MISD (70 golillas malas) y, si se consigue cuenta, Roboflow MassMEP y Kaggle «Simplified washers». Se miden los tres enfoques; nada se elige con esos datos ([ADR 0013](docs/adr/0013-datos-publicos.md)).
+2. ~~Ajuste justo de las redes (e09)~~: hecho. La clásica sigue ganando ([ADR 0004](docs/adr/0004-n1-enfoque.md)).
 3. Ajustar los hiperparámetros de la cadena clásica y probar de punta a punta las 2 mejores técnicas de cada proceso.
 4. Enfoques N1 que faltan: plantilla dorada y desenrollado polar del anillo.
 5. Diámetro en mm con su incertidumbre: calibrar píxel → mm y medir la repetibilidad.
