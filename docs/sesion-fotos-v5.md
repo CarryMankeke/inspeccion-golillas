@@ -1,5 +1,7 @@
 # Sesión de fotos de la v5: guía paso a paso
 
+> **No se usa.** El 27 nov 2026 la v5 pasó a datasets públicos y esta sesión no se hizo ([ADR 0016](adr/0016-n1-v5-fotos-propias.md), rechazada).
+
 Esta guía es para tomar las fotos propias de la [v5](adr/0016-n1-v5-fotos-propias.md). Son 198 fotos: 180 golillas y 18 papelitos que separan las filas. Se toman **en un solo día, sin mover el celular**. Preparar las malas toma cerca de 1 hora, y se puede hacer el día antes. Las fotos toman unas 2 horas (las dos cifras son estimadas, **no medidas**).
 
 No hace falta saber para qué sirve cada foto: la tabla del final ya trae el orden, armado al azar. Solo hay que seguirla.

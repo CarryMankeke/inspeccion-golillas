@@ -1,6 +1,6 @@
 # ADR 0016 · N1 v5: un candidato fijado y una sesión de fotos propias
 
-**Estado:** propuesta. Con el OK de Camilo pasa a aceptada, y recién ahí se toman las fotos · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Código:** `golillas/sesion.py` y `scripts/sesion_v5.py` (lista de tomas y sello); la prueba ciega va en `experimentos/e13_n1_v5.py`, por escribir
+**Estado:** rechazada el 27 nov 2026, sin que se tomara ninguna foto. Camilo decidió que la v5 no usa fotos propias: va solo con datasets públicos de golillas buenas y malas, y el proyecto se adapta a varios tipos de golilla. El plan nuevo va en un ADR aparte. Este queda como registro, con su lista y su código del sello sin usar · **Fecha:** 2026-11-27 · **Nivel:** N1 · **Código:** `golillas/sesion.py` y `scripts/sesion_v5.py` (lista de tomas y sello); la prueba ciega va en `experimentos/e13_n1_v5.py`, por escribir
 
 ## Contexto
 En la v4 (e12, [ADR 0015](0015-n1-v4-opciones.md)) ningún candidato cumplió. El umbral conformal arregló a PatchCore en Kaggle: pasó de 55 a 86 malas de 100, sin falsas. Pero el requisito del montaje propio se mide con 15 buenas, y con 15 no existe un umbral conformal del 3 % (hacen falta 33). Lo que bloquea ya no es el método: faltan buenas propias para calibrar.
