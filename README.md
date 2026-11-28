@@ -146,10 +146,12 @@ Próximos pasos:
 
    ![Kaggle: el umbral de la v3 contra el conformal de la v4](docs/figuras/e12_umbral_kaggle.png)
 
-3. Ajustar los hiperparámetros de la cadena clásica y probar de punta a punta las 2 mejores técnicas de cada proceso.
-4. Enfoques N1 que faltan: plantilla dorada y desenrollado polar del anillo.
-5. Diámetro en mm con su incertidumbre: calibrar píxel → mm y medir la repetibilidad.
-6. Robustez a la luz, al desenfoque y a la altura de la cámara, y latencia en Raspberry Pi o Jetson.
+3. **Estado del arte (v5, en propuesta).** El proyecto pasa a comparar la visión clásica con 7 a 9 métodos de IA de 2020 a 2025 (PatchCore, PaDiM, AnomalyDINO, Dinomaly, EfficientAD y WinCLIP, de [anomalib](https://github.com/open-edge-platform/anomalib)), en dos tipos de golilla del dataset MANTA (CVPR 2025). Cada método se calibra solo con buenas de cada tipo. El plan y su criterio, fijados antes de bajar los sets de prueba, están en el [ADR 0017](docs/adr/0017-n0-v2-estado-del-arte.md), y el catastro de datasets, métodos y licencias, en [docs/estado-del-arte.md](docs/estado-del-arte.md).
+
+4. Ajustar los hiperparámetros de la cadena clásica y probar de punta a punta las 2 mejores técnicas de cada proceso.
+5. Enfoques N1 que faltan: plantilla dorada y desenrollado polar del anillo.
+6. Diámetro en mm con su incertidumbre: calibrar píxel → mm y medir la repetibilidad.
+7. Robustez a la luz, al desenfoque y a la altura de la cámara, y latencia en Raspberry Pi o Jetson.
 
 ### Licencia
 MIT ([LICENSE](LICENSE)). Las 21 fotos reales vienen del proyecto MATLAB original. Los datasets públicos no se suben: se bajan con `scripts/descargar_datos.py` y sus licencias están en [data/ATRIBUCIONES.md](data/ATRIBUCIONES.md).

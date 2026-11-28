@@ -5,7 +5,8 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 ## Por dónde empezar
 1. [Árbol de decisiones](arbol.md): el diseño completo en un diagrama, de lo general (N0) a cada técnica probada (N3).
 2. [Glosario](glosario.md): los términos técnicos en una línea cada uno.
-3. Los registros de decisión (ADR), uno por decisión:
+3. [Estado del arte](estado-del-arte.md): datasets, métodos, librerías y servicios para inspeccionar golillas, con sus licencias verificadas.
+4. Los registros de decisión (ADR), uno por decisión:
 
 | ADR | Decisión | Evidencia clave |
 |---|---|---|
@@ -24,7 +25,8 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 | [0013](adr/0013-datos-publicos.md) | datos públicos y prueba ciega | Edge Impulse: clásica 31 %, PatchCore 67 % (AUC 0,75 contra 0,95) |
 | [0014](adr/0014-n1-v3-varios-montajes.md) | N1 v3 · varios montajes | ningún candidato cumple (e11) |
 | [0015](adr/0015-n1-v4-opciones.md) | N1 v4 · umbral conformal | PatchCore 86/100 en Kaggle sin falsas; ningún candidato cumple (e12) |
-| [0016](adr/0016-n1-v5-fotos-propias.md) | N1 v5 · un candidato fijado y 180 fotos propias (rechazada) | la v5 va con datasets públicos de varios tipos de golilla; ADR por escribir |
+| [0016](adr/0016-n1-v5-fotos-propias.md) | N1 v5 · un candidato fijado y 180 fotos propias (rechazada) | la v5 va con datasets públicos de varios tipos de golilla ([ADR 0017](adr/0017-n0-v2-estado-del-arte.md)) |
+| [0017](adr/0017-n0-v2-estado-del-arte.md) | N0 v2 y N1 v5 · estado del arte: clásica contra IA en varios tipos de golilla (propuesta) | 9 métodos y 2 tipos de MANTA que deciden; criterio fijado antes de bajar los sets de prueba |
 
 ## Cómo está escrito cada ADR
 Contexto → opciones → criterio (escrito en el script antes de ver el ranking) → tabla de resultados → decisión → revisiones, si el criterio o el código se corrigió. Cada gráfico sale de un script en `experimentos/`, y cada decisión queda también en `resultados/decisiones.json`.

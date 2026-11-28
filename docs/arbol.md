@@ -23,6 +23,7 @@ flowchart TD
     DP -.-> V3["N1 v3 (e11): varios montajes<br/>ningún candidato cumple<br/>ADR 0014"]
     V3 -.-> V4["N1 v4 (e12): umbral conformal<br/>PatchCore 86/100 en Kaggle, 0 falsas<br/>ningún candidato cumple · ADR 0015"]
     V4 -.-> V5["N1 v5: 180 fotos propias<br/>rechazada: la v5 va con datasets públicos<br/>ADR 0016"]
+    V5 -.-> SA["N0 v2 y N1 v5: estado del arte<br/>9 métodos, clásica contra IA, por tipo de golilla<br/>propuesta · ADR 0017"]
     C --> P1["P1 Preprocesado<br/>★ dividir por el fondo<br/>ADR 0006"]
     P1 --> P2["P2 Segmentación<br/>★ Otsu<br/>ADR 0007"]
     P2 --> P3["P3 Bordes<br/>★ subpíxel por gradiente<br/>ADR 0008"]
