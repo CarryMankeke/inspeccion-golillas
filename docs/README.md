@@ -26,7 +26,8 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 | [0014](adr/0014-n1-v3-varios-montajes.md) | N1 v3 · varios montajes | ningún candidato cumple (e11) |
 | [0015](adr/0015-n1-v4-opciones.md) | N1 v4 · umbral conformal | PatchCore 86/100 en Kaggle sin falsas; ningún candidato cumple (e12) |
 | [0016](adr/0016-n1-v5-fotos-propias.md) | N1 v5 · un candidato fijado y 180 fotos propias (rechazada) | la v5 va con datasets públicos de varios tipos de golilla ([ADR 0017](adr/0017-n0-v2-estado-del-arte.md)) |
-| [0017](adr/0017-n0-v2-estado-del-arte.md) | N0 v2 y N1 v5 · estado del arte: clásica contra IA en varios tipos de golilla (propuesta) | 9 métodos y 2 tipos de MANTA que deciden; criterio fijado antes de bajar los sets de prueba |
+| [0017](adr/0017-n0-v2-estado-del-arte.md) | N0 v2 y N1 v5 · estado del arte: clásica contra IA en varios tipos de golilla (aceptada) | 8 métodos y 2 tipos de MANTA que deciden; requisitos del AIAG MSA y la VDI 2632-3, fijados antes de bajar los sets de prueba |
+| [0018](adr/0018-p0-alimentacion-encimadas.md) | P0 · alimentación y golillas encimadas, con una cámara lateral (propuesta) | catastro de alimentadores de la industria |
 
 ## Cómo está escrito cada ADR
 Contexto → opciones → criterio (escrito en el script antes de ver el ranking) → tabla de resultados → decisión → revisiones, si el criterio o el código se corrigió. Cada gráfico sale de un script en `experimentos/`, y cada decisión queda también en `resultados/decisiones.json`.
