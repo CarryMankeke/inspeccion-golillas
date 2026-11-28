@@ -48,11 +48,12 @@ FUENTES = {
     ),
     "manta_tiny_mechanics": dict(
         # MANTA Tiny (CVPR 2025): trae red_washer y yellow_green_washer, más otras 9 piezas (ADR 0017).
-        # Se baja solo con el OK de Camilo; las 9 piezas que sobran se borran después de sellar.
+        # Bajada el 28 nov 2026 con el OK de Camilo. Las golillas: red_washer (578 / 148 + 74) y
+        # yellow_green_washer (584 / 144 + 72), como distribution.md. Las 9 piezas que sobran se borran al sellar.
         url="https://ndownloader.figshare.com/files/50971446",
         bytes=3_197_059_395,
         md5="8b01e374f83bf02390d50b3cb4ad96f9",  # publicado por figshare (API, leída el 28 nov 2026)
-        sha256=None,  # se fija en la primera descarga
+        sha256="57d5a326cd24119cfa5406a7c267931c6840f9bd1f3c71c1599cf119290048bc",  # fijada el 28 nov 2026
         licencia="CC BY-NC-SA 4.0 (página del proyecto; figshare marca CC BY 4.0: se respeta la más restrictiva)",
         fuente="https://figshare.com/articles/dataset/manta-tiny/27934938",
         formato="tar.gz",
