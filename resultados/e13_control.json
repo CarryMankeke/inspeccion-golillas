@@ -1,0 +1,16 @@
+{
+ "e13": {
+  "malas": 86,
+  "falsas": 0
+ },
+ "e12": {
+  "malas": 86,
+  "falsas": 0
+ },
+ "n": {
+  "ajusta": 500,
+  "calibra": 500,
+  "mide": 200
+ },
+ "igual": true
+}

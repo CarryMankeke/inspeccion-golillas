@@ -1,0 +1,20 @@
+{
+ "conjunto": "roboflow_saksit_metal_washer",
+ "n_ajusta": 91,
+ "vistas": 1,
+ "vista_arriba": 0,
+ "invertir": true,
+ "escala": 0.19609382054936714,
+ "mide": 1.0,
+ "clasica_aplica": true,
+ "por_vista": [
+  {
+   "vista": 0,
+   "invertir": true,
+   "radio_mediano_px": 254.9799879461901,
+   "escala": 0.19609382054936714,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.020371806681128975
+  }
+ ]
+}

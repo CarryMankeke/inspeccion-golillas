@@ -1,0 +1,52 @@
+{
+ "conjunto": "manta_red_washer",
+ "n_ajusta": 289,
+ "vistas": 5,
+ "vista_arriba": 0,
+ "invertir": true,
+ "escala": 0.44409711697164367,
+ "mide": 1.0,
+ "clasica_aplica": true,
+ "por_vista": [
+  {
+   "vista": 0,
+   "invertir": true,
+   "radio_mediano_px": 112.58798602647218,
+   "escala": 0.44409711697164367,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.0042214014917770154
+  },
+  {
+   "vista": 1,
+   "invertir": true,
+   "radio_mediano_px": 106.61541181097208,
+   "escala": 0.4689753493486424,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.011966633977414863
+  },
+  {
+   "vista": 2,
+   "invertir": true,
+   "radio_mediano_px": 106.44659232913187,
+   "escala": 0.4697191230452964,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.01667867364639902
+  },
+  {
+   "vista": 3,
+   "invertir": true,
+   "radio_mediano_px": 106.46303784521847,
+   "escala": 0.4696465647795305,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.022347683616086397
+  },
+  {
+   "vista": 4,
+   "invertir": true,
+   "radio_mediano_px": 106.91355392493472,
+   "escala": 0.4676675516287261,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.009957920408786998
+  }
+ ]
+}

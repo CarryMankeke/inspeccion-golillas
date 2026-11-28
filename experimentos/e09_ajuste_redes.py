@@ -39,36 +39,17 @@ from torchvision.models import ResNet18_Weights, resnet18
 from golillas import decision as dec
 from golillas import sintetico
 from golillas.datos import RAIZ, cargar_reales
+from golillas.metodos.patchcore_propio import CAPAS, DEV, PatchCore, gira, norm, u8  # noqa: F401
 
-DEV = "cuda" if torch.cuda.is_available() else "cpu"
 CACHE = RAIZ / "cache" / "e09_recortes.pt"
 SEMILLAS = {"entrenamiento": 5, "validacion": 9, "prueba": 6}
 LRS, EPOCAS = (1e-4, 3e-4, 1e-3), (10, 20)
 FINO = dict(div_lr=10, epocas=10, lote=10)  # receta fija del ajuste con reales
-CAPAS = {"l2+l3": (2, 3), "l1+l2+l3": (1, 2, 3)}
 CORESETS = (1.0, 0.1, 0.01)
 N_BANCO_SINT = 40
-MEDIA = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
-DESV = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
 
 
 # ---------------------------------------------------------------- datos y utilidades
-def u8(imgs):
-    """Lista de recortes RGB H×W×3 → tensor uint8 N×3×H×W (ocupa 4 veces menos que float)."""
-    return torch.from_numpy(np.stack(imgs)).permute(0, 3, 1, 2).contiguous()
-
-
-def norm(x, dev=None):
-    dev = dev or DEV
-    return (x.to(dev).float() / 255 - MEDIA.to(dev)) / DESV.to(dev)
-
-
-def gira(x, k):
-    """Una de las 8 simetrías exactas (giros de 90° y espejos) de un lote NCHW."""
-    y = torch.rot90(x, k % 4, dims=(2, 3))
-    return torch.flip(y, dims=(3,)) if k >= 4 else y
-
-
 def datos():
     if CACHE.exists():
         return torch.load(CACHE, weights_only=False)
@@ -182,82 +163,6 @@ def supervisada_reales(D, estado, lr):
 
 
 # ---------------------------------------------------------------- PatchCore
-RED = None
-
-
-@torch.no_grad()
-def kcentro(f, m, dim=128):
-    """Coreset voraz (k-centros) sobre una proyección aleatoria a `dim` dimensiones, como PatchCore."""
-    g = torch.Generator().manual_seed(0)
-    z = f @ (torch.randn(f.shape[1], dim, generator=g) / dim**0.5).to(f.device)
-    sel = torch.zeros(m, dtype=torch.long, device=f.device)
-    dmin = ((z - z[0]) ** 2).sum(1)
-    for t in range(1, m):  # todo en la GPU, sin sincronizar en cada paso
-        j = torch.argmax(dmin).view(1)
-        sel[t : t + 1] = j
-        dmin = torch.minimum(dmin, ((z - z.index_select(0, j)) ** 2).sum(1))
-    return sel
-
-
-class PatchCore:
-    def __init__(self, capas, coreset):
-        global RED
-        if RED is None:
-            RED = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1).eval().to(DEV)
-        self.capas, self.coreset, self.net, self.dev = capas, coreset, RED, DEV
-
-    @torch.no_grad()
-    def rasgos(self, x):
-        n = self.net
-        h = n.maxpool(n.relu(n.bn1(n.conv1(norm(x, self.dev)))))
-        l1 = n.layer1(h)
-        l2 = n.layer2(l1)
-        l3 = n.layer3(l2)
-        mapas = {1: Fn.adaptive_avg_pool2d(l1, l2.shape[-2:]), 2: l2,
-                 3: Fn.interpolate(l3, size=l2.shape[-2:], mode="bilinear", align_corners=False)}
-        f = Fn.avg_pool2d(torch.cat([mapas[c] for c in self.capas], 1), 3, 1, 1)
-        return f.permute(0, 2, 3, 1).reshape(x.shape[0], -1, f.shape[1])  # N × parches × C
-
-    @torch.no_grad()
-    def ajustar(self, xb, giros=8):
-        partes, duenos = [], []
-        for k in range(giros):
-            for i in range(0, len(xb), 32):
-                f = self.rasgos(gira(xb[i : i + 32], k))
-                partes.append(f.reshape(-1, f.shape[-1]))
-                duenos.append(torch.arange(i, i + len(f), device=self.dev).repeat_interleave(f.shape[1]))
-        banco, dueno = torch.cat(partes), torch.cat(duenos)
-        del partes
-        if self.coreset < 1:
-            sel = kcentro(banco, max(1, int(self.coreset * len(banco))))
-            banco, dueno = banco[sel], dueno[sel]
-        self.banco = banco
-        # umbral por LOO interno: cada buena contra el banco sin sus propios parches
-        s = [self._puntaje(self.rasgos(xb[i : i + 1])[0], banco[dueno != i]) for i in range(len(xb))]
-        self.umbral, self.n_banco, self.loo = float(max(s)), len(banco), np.array(s)
-        return self
-
-    @staticmethod
-    def _puntaje(f, banco, trozo=65536):
-        dmin = torch.full((f.shape[0],), float("inf"), device=f.device)
-        for j in range(0, len(banco), trozo):
-            dmin = torch.minimum(dmin, torch.cdist(f, banco[j : j + trozo]).min(1).values)
-        return float(dmin.max())
-
-    @torch.no_grad()
-    def puntaje(self, x):
-        return np.array([self._puntaje(f, self.banco) for i in range(0, len(x), 16)
-                         for f in self.rasgos(x[i : i + 16])])
-
-    def a(self, dev):
-        """Copia liviana en otro dispositivo (para medir la latencia en CPU)."""
-        otro = PatchCore.__new__(PatchCore)
-        otro.capas, otro.coreset, otro.dev, otro.umbral = self.capas, self.coreset, dev, self.umbral
-        otro.net = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1).eval().to(dev)
-        otro.banco = self.banco.to(dev)
-        return otro
-
-
 def patchcore_reales(D, capas, coreset):
     yr = D["yr"]
     pa, pr, um = np.zeros(len(yr)), np.zeros((len(yr), 7)), np.zeros(len(yr))

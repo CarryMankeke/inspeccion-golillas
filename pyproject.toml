@@ -24,9 +24,14 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.5"]
 red = ["torch>=2.2", "torchvision>=0.17"]
+# ADR 0017 (e13): versiones fijas; torch 2.14 + CUDA 12.6 es la última con kernels para la GTX 1060
+sota = ["anomalib==2.7.1", "torch==2.14.1", "torchvision==0.29.1"]
 
 [tool.setuptools]
-packages = ["golillas"]
+packages = ["golillas", "golillas.metodos"]
+
+[tool.setuptools.package-data]
+golillas = ["calibracion.json", "tipos/*.json"]
 
 [tool.ruff]
 line-length = 120

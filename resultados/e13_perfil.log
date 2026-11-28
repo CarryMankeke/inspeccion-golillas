@@ -1,0 +1,7 @@
+manta_red_washer {'vista_arriba': 0, 'invertir': True, 'escala': 0.44409711697164367, 'mide': 1.0, 'clasica_aplica': True}
+manta_yellow_green_washer {'vista_arriba': 0, 'invertir': True, 'escala': 0.47629402864392817, 'mide': 1.0, 'clasica_aplica': True}
+roboflow_saksit_metal_washer {'vista_arriba': 0, 'invertir': True, 'escala': 0.19609382054936714, 'mide': 1.0, 'clasica_aplica': True}
+roboflow_renuka_washer_defect {'vista_arriba': 0, 'invertir': True, 'escala': 0.14157593824704676, 'mide': 1.0, 'clasica_aplica': True}
+roboflow_washer_classifier {'vista_arriba': 0, 'invertir': True, 'escala': 0.15998726541034725, 'mide': 1.0, 'clasica_aplica': True}
+kaggle {'vista_arriba': 0, 'invertir': False, 'escala': 0.9752014858602636, 'mide': 0.882, 'clasica_aplica': False}
+edge_impulse {'vista_arriba': 0, 'invertir': True, 'escala': 1.031752702800583, 'mide': 0.6813186813186813, 'clasica_aplica': False}

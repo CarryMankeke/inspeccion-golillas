@@ -162,3 +162,26 @@ def modelos():
             RandomForestClassifier(200, class_weight="balanced", random_state=0)),
         "knn": _SkSupervisado(KNeighborsClassifier(3)),
     }
+
+
+def ic_exacto(k: int, n: int, confianza: float = 0.95) -> tuple[float, float]:
+    """IC exacto (Clopper-Pearson) de una tasa k/n; (nan, nan) si n = 0."""
+    from scipy.stats import binomtest
+
+    if not n:
+        return float("nan"), float("nan")
+    r = binomtest(int(k), int(n)).proportion_ci(confianza, method="exact")
+    return float(r.low), float(r.high)
+
+
+# Criterio del análisis por atributos atribuido al AIAG MSA 4.ª ed. (ADR 0017, guías secundarias)
+AIAG = {"aceptable": (0.02, 0.05), "marginal": (0.05, 0.10)}  # (no detección máx., falsa alarma máx.)
+
+
+def clase_aiag(no_detectadas: int, n_malas: int, falsas: int, n_buenas: int) -> str:
+    """«aceptable», «marginal» o «inaceptable» según las tasas puntuales de no detección y de falsa alarma."""
+    nd, fa = no_detectadas / n_malas, falsas / n_buenas
+    for clase, (max_nd, max_fa) in AIAG.items():
+        if nd <= max_nd + 1e-12 and fa <= max_fa + 1e-12:
+            return clase
+    return "inaceptable"

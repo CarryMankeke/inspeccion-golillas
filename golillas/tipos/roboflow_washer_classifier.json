@@ -1,0 +1,20 @@
+{
+ "conjunto": "roboflow_washer_classifier",
+ "n_ajusta": 136,
+ "vistas": 1,
+ "vista_arriba": 0,
+ "invertir": true,
+ "escala": 0.15998726541034725,
+ "mide": 1.0,
+ "clasica_aplica": true,
+ "por_vista": [
+  {
+   "vista": 0,
+   "invertir": true,
+   "radio_mediano_px": 312.5248742251846,
+   "escala": 0.15998726541034725,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.007935777704109605
+  }
+ ]
+}

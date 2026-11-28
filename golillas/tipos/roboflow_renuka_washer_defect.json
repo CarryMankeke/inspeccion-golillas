@@ -1,0 +1,20 @@
+{
+ "conjunto": "roboflow_renuka_washer_defect",
+ "n_ajusta": 5,
+ "vistas": 1,
+ "vista_arriba": 0,
+ "invertir": true,
+ "escala": 0.14157593824704676,
+ "mide": 1.0,
+ "clasica_aplica": true,
+ "por_vista": [
+  {
+   "vista": 0,
+   "invertir": true,
+   "radio_mediano_px": 353.16735752618604,
+   "escala": 0.14157593824704676,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.013948556215123196
+  }
+ ]
+}

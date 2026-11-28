@@ -191,6 +191,28 @@ Deciden los dos tipos de MANTA y los sets de Roboflow que pasen la regla de tama
 
 Hasta el paso 6, ningún programa decodifica una imagen de prueba.
 
+**Avance (28 nov 2026):**
+
+| Paso | Estado |
+|---|---|
+| 2. Descarga | MANTA Tiny (commit 2d07c18) y los tres de Roboflow (commit 547ef30), con huellas |
+| 3. Sello | MANTA (commit 30ac891; después se borraron las 9 piezas que no son golillas, commit 8aa081b) y Roboflow (547ef30) |
+| 4. Código y humo | Este commit. El control pasa: el PatchCore propio, movido a `golillas/metodos/patchcore_propio.py`, repite en Kaggle los números de e12 (86/100 malas y 0/100 falsas; `resultados/e13_control.json`). Humo en curso al cerrar la sesión: en Kaggle ya corrieron sin error el PatchCore propio, PatchCore, PaDiM y AnomalyDINO; faltaban Dinomaly, WinCLIP y Edge Impulse (**no verificado**) |
+| 5. Perfil de cada tipo | Este commit (`golillas/tipos/`). En las dos golillas de MANTA, la vista de arriba es la 0, la clásica mide el 100 % de las que ajustan, la golilla se invierte (sale más clara que el fondo) y la escala es 0,44 (roja) y 0,48 (amarillo-verde). En Kaggle (88 %) y Edge Impulse (68 %) la clásica no aplica |
+
+## Detalles de implementación de e13 (fijados antes de la corrida)
+Lo que el protocolo no decía y el código tuvo que fijar. Nada de esto se eligió mirando resultados de los sets que deciden.
+
+- **anomalib sin su `Engine`.** Se usan los modelos de PyTorch de anomalib 2.7.1 con su pre-procesador por defecto (tamaño y normalización de cada modelo) y **sin su post-procesador**, que normaliza el puntaje y lo recorta a [0, 1]: el umbral conformal necesita el puntaje crudo. Los métodos sin entrenamiento llenan su banco con lotes de 32 (el lote por defecto de los datamodules de anomalib) y después llaman a `fit()`.
+- **Dinomaly** se entrena con su receta de anomalib (`TRAINING_CONFIG`: StableAdamW, lr 2·10⁻³ con calentamiento de 100 pasos y caída coseno hasta 2·10⁻⁴, recorte del gradiente en 0,1) por 5.000 pasos, el valor por defecto, con lotes de 32 que bajan a la mitad si no caben. Cada época baraja las vistas con la semilla 0 y bota el último lote incompleto. Se corta a las 2 horas por tipo.
+- **WinCLIP** compara cada vista con las frases de anomalib para «washer» (el nombre del producto, sin buscar otro) y sin imágenes de referencia (`k_shot` = 0, su valor por defecto).
+- **PatchCore propio en MANTA:** cada vista de 256 × 256 se lleva entera a 224 × 224, sin recorte, porque las vistas ya vienen centradas. Con 50 vistas o más, el banco no suma giros (como e10 a e12).
+- **Clásica:** la vista de arriba del perfil, invertida si el perfil lo dice, y escalada para que el radio exterior mediano quede en 50 px. El perfil prueba cada vista: la polaridad sale por mayoría de la regla de e10, la escala de la mediana del radio equivalente, y la vista de arriba es la que mide más piezas (si empatan, la de menor excentricidad mediana). El modelo es la distancia de Mahalanobis² del N0 v1, con el umbral conformal en vez del de Hotelling.
+- **Fotos grandes:** las de una sola vista se reducen al cargarlas a 1.024 px de lado largo (renuka-p trae 4.024 × 3.036). MANTA no se reduce. La prueba de los cargadores atrapó que, sin esa excepción, MANTA se habría reducido y no se habría podido cortar en 5 vistas.
+- **Latencia:** la mediana de 50 piezas que ajustan, después de 3 de calentamiento, con una copia del modelo en la CPU y 4 hilos; en la GPU, igual, sincronizando antes y después de cada pieza.
+- **Un método que falla** (un error que no es de memoria) queda en la tabla con su error y cuenta como que no cumple.
+- **Sets de desarrollo en e13:** Kaggle y Edge Impulse (no ciego), con la partición de e12 para que se puedan comparar. Las 21 propias y las sintéticas no se informan: las propias no alcanzan para el umbral conformal (15 buenas; hacen falta 33) y las sintéticas no distinguieron configuraciones en e09 a e12.
+
 ## Qué cambia en el código
 | Dónde | Cambio |
 |---|---|

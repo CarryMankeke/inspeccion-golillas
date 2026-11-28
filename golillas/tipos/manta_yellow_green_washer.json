@@ -1,0 +1,52 @@
+{
+ "conjunto": "manta_yellow_green_washer",
+ "n_ajusta": 292,
+ "vistas": 5,
+ "vista_arriba": 0,
+ "invertir": true,
+ "escala": 0.47629402864392817,
+ "mide": 1.0,
+ "clasica_aplica": true,
+ "por_vista": [
+  {
+   "vista": 0,
+   "invertir": true,
+   "radio_mediano_px": 104.97717164827068,
+   "escala": 0.47629402864392817,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.007185185067432301
+  },
+  {
+   "vista": 1,
+   "invertir": true,
+   "radio_mediano_px": 100.08999893710799,
+   "escala": 0.49955040994073474,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.015084114138533656
+  },
+  {
+   "vista": 2,
+   "invertir": true,
+   "radio_mediano_px": 99.55588413084777,
+   "escala": 0.5022304852848704,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.018178069010911135
+  },
+  {
+   "vista": 3,
+   "invertir": true,
+   "radio_mediano_px": 99.47991938805566,
+   "escala": 0.5026139979562889,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.02474904264002535
+  },
+  {
+   "vista": 4,
+   "invertir": true,
+   "radio_mediano_px": 100.29808800353067,
+   "escala": 0.49851398960107707,
+   "mide": 1.0,
+   "excentricidad_mediana": 0.009228296256673194
+  }
+ ]
+}

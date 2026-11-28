@@ -1,0 +1,20 @@
+{
+ "conjunto": "edge_impulse",
+ "n_ajusta": 91,
+ "vistas": 1,
+ "vista_arriba": 0,
+ "invertir": true,
+ "escala": 1.031752702800583,
+ "mide": 0.6813186813186813,
+ "clasica_aplica": false,
+ "por_vista": [
+  {
+   "vista": 0,
+   "invertir": true,
+   "radio_mediano_px": 48.46122512136902,
+   "escala": 1.031752702800583,
+   "mide": 0.6813186813186813,
+   "excentricidad_mediana": 0.010871883945107613
+  }
+ ]
+}
