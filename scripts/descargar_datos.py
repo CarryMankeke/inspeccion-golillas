@@ -49,7 +49,7 @@ FUENTES = {
     "manta_tiny_mechanics": dict(
         # MANTA Tiny (CVPR 2025): trae red_washer y yellow_green_washer, más otras 9 piezas (ADR 0017).
         # Bajada el 28 nov 2026 con el OK de Camilo. Las golillas: red_washer (578 / 148 + 74) y
-        # yellow_green_washer (584 / 144 + 72), como distribution.md. Las 9 piezas que sobran se borran al sellar.
+        # yellow_green_washer (584 / 144 + 72), como distribution.md. Las 9 piezas que sobran se borraron al sellar.
         url="https://ndownloader.figshare.com/files/50971446",
         bytes=3_197_059_395,
         md5="8b01e374f83bf02390d50b3cb4ad96f9",  # publicado por figshare (API, leída el 28 nov 2026)
@@ -57,6 +57,9 @@ FUENTES = {
         licencia="CC BY-NC-SA 4.0 (página del proyecto; figshare marca CC BY 4.0: se respeta la más restrictiva)",
         fuente="https://figshare.com/articles/dataset/manta-tiny/27934938",
         formato="tar.gz",
+        # Tras sellar (commit 30ac891) se borraron las 9 piezas que sobran; quedan las dos golillas:
+        archivos=1746,
+        arbol_sha256="998c68885336efc8c348b5ed0563739a0c41cb9fa86375f268b224789e02b205",  # fijada el 28 nov 2026
     ),
     "roboflow_massmep_washers": dict(
         manual=True,  # pide cuenta: se exporta a mano en formato COCO (Camilo, 27 nov 2026)
