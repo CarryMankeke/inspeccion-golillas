@@ -1,0 +1,13 @@
+conjunto,metodo,defecto,n,detectadas
+kaggle,patchcore_propio,mala,40,33
+kaggle,patchcore,mala,40,31
+kaggle,padim,mala,40,29
+kaggle,anomalydino,mala,40,35
+kaggle,dinomaly,mala,40,30
+kaggle,winclip,mala,40,23
+edge_impulse,patchcore_propio,mala,40,25
+edge_impulse,patchcore,mala,40,24
+edge_impulse,padim,mala,40,0
+edge_impulse,anomalydino,mala,40,11
+edge_impulse,dinomaly,mala,40,14
+edge_impulse,winclip,mala,40,13

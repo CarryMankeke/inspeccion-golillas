@@ -1,0 +1,9 @@
+metodo,familia,explica,cumple,det_media,ms_media
+clasica_4,clasica,0,False,,
+clasica_v3_6,clasica,0,False,,
+patchcore_propio,sin_entrenamiento,1,False,0.725,27.37437200266868
+patchcore,sin_entrenamiento,1,False,0.6875,179.22835052013397
+padim,sin_entrenamiento,1,False,0.3625,198.76326998928562
+anomalydino,sin_entrenamiento,1,False,0.575,533.6820745142177
+dinomaly,con_entrenamiento,2,False,0.55,919.4939059962053
+winclip,texto,3,False,0.44999999999999996,2337.868645961862

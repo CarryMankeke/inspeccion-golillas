@@ -197,7 +197,7 @@ Hasta el paso 6, ningún programa decodifica una imagen de prueba.
 |---|---|
 | 2. Descarga | MANTA Tiny (commit 2d07c18) y los tres de Roboflow (commit 547ef30), con huellas |
 | 3. Sello | MANTA (commit 30ac891; después se borraron las 9 piezas que no son golillas, commit 8aa081b) y Roboflow (547ef30) |
-| 4. Código y humo | Este commit. El control pasa: el PatchCore propio, movido a `golillas/metodos/patchcore_propio.py`, repite en Kaggle los números de e12 (86/100 malas y 0/100 falsas; `resultados/e13_control.json`). Humo en curso al cerrar la sesión: en Kaggle ya corrieron sin error el PatchCore propio, PatchCore, PaDiM y AnomalyDINO; faltaban Dinomaly, WinCLIP y Edge Impulse (**no verificado**) |
+| 4. Código y humo | Este commit. El control pasa: el PatchCore propio, movido a `golillas/metodos/patchcore_propio.py`, repite en Kaggle los números de e12 (86/100 malas y 0/100 falsas; `resultados/e13_control.json`). Humo completo (9 min): los 8 métodos corren sin error en Kaggle y Edge Impulse (40 piezas por grupo y clase, 20 pasos de Dinomaly), y la elección y el gráfico se arman; la clásica no aplica en esos dos sets (mide 88 % y 70 %). Archivos `resultados/e13_*_humo.*` |
 | 5. Perfil de cada tipo | Este commit (`golillas/tipos/`). En las dos golillas de MANTA, la vista de arriba es la 0, la clásica mide el 100 % de las que ajustan, la golilla se invierte (sale más clara que el fondo) y la escala es 0,44 (roja) y 0,48 (amarillo-verde). En Kaggle (88 %) y Edge Impulse (68 %) la clásica no aplica |
 
 ## Detalles de implementación de e13 (fijados antes de la corrida)

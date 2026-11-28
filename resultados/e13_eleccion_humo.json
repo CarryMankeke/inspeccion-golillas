@@ -1,0 +1,13 @@
+{
+ "elegido": null,
+ "ninguno_cumple": true,
+ "adoptado": false,
+ "alfa": 0.03,
+ "deciden": [
+  "kaggle",
+  "edge_impulse"
+ ],
+ "ms_max": 100.0,
+ "minutos": 9.1,
+ "dispositivo": "NVIDIA GeForce GTX 1060 6GB"
+}
