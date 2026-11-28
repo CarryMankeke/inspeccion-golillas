@@ -1,6 +1,6 @@
 # ADR 0017 · N0 v2 y N1 v5: estado del arte con datasets públicos de varios tipos de golilla
 
-**Estado:** aceptada el 28 nov 2026, con el OK de Camilo en el chat y con los requisitos tomados de normas y referencias citables. Ningún set de prueba se ha bajado ni mirado antes de este commit · **Fecha:** 2026-11-28 · **Nivel:** N0 y N1 · **Script:** `experimentos/e13_estado_del_arte.py`, por escribir · **Catastro:** [estado-del-arte.md](../estado-del-arte.md)
+**Estado:** aceptada el 28 nov 2026, con el OK de Camilo en el chat y con los requisitos tomados de normas y referencias citables. **Decidida el mismo día con e13: ninguno cumple** ([resultado](#resultado-de-e13-corrida-única-28-nov-2026)). Ningún set de prueba se ha bajado ni mirado antes de este commit · **Fecha:** 2026-11-28 · **Nivel:** N0 y N1 · **Script:** `experimentos/e13_estado_del_arte.py` · **Catastro:** [estado-del-arte.md](../estado-del-arte.md)
 
 > **Cambio del 28 nov 2026, antes de bajar ningún dato:** la propuesta del commit 923c275 pedía ≥ 95 % de detección, con números propios. Camilo pidió que cada requisito saliera de una norma o referencia citable. Ahora la detección, las falsas alarmas y la latencia salen de la tabla «De dónde salen los números». EfficientAD queda fuera (sus pesos no declaran licencia) y WinCLIP entra (pesos MIT).
 
@@ -199,6 +199,39 @@ Hasta el paso 6, ningún programa decodifica una imagen de prueba.
 | 3. Sello | MANTA (commit 30ac891; después se borraron las 9 piezas que no son golillas, commit 8aa081b) y Roboflow (547ef30) |
 | 4. Código y humo | Este commit. El control pasa: el PatchCore propio, movido a `golillas/metodos/patchcore_propio.py`, repite en Kaggle los números de e12 (86/100 malas y 0/100 falsas; `resultados/e13_control.json`). Humo completo (9 min): los 8 métodos corren sin error en Kaggle y Edge Impulse (40 piezas por grupo y clase, 20 pasos de Dinomaly), y la elección y el gráfico se arman; la clásica no aplica en esos dos sets (mide 88 % y 70 %). Archivos `resultados/e13_*_humo.*` |
 | 5. Perfil de cada tipo | Este commit (`golillas/tipos/`). En las dos golillas de MANTA, la vista de arriba es la 0, la clásica mide el 100 % de las que ajustan, la golilla se invierte (sale más clara que el fondo) y la escala es 0,44 (roja) y 0,48 (amarillo-verde). En Kaggle (88 %) y Edge Impulse (68 %) la clásica no aplica |
+| 6. Corrida única | Del 28 nov 2026, 02:49 al 09:11 (382 min), en el servidor, con el candado de GPU tomado para que ningún otro trabajo usara la GPU ni cargara modelos. Salió sin errores. Ninguna imagen de prueba se decodificó antes. Ver abajo |
+
+## Resultado de e13 (corrida única, 28 nov 2026)
+**Decisión: ninguno cumple.** `enfoque_v5` = ninguno, `adoptado = false`. El [ADR 0004](0004-n1-enfoque.md) sigue en revisión. Los requisitos no se relajan.
+
+| Método | Familia | Roja: malas · falsas · clase AIAG · AUC | Amarillo-verde: malas · falsas · clase AIAG · AUC | ms por pieza en CPU | ms en GTX 1060 | Cumple |
+|---|---|---|---|---|---|---|
+| clasica_4 | Clásica | 36/74 · 4/148 · inaceptable · 0,722 | 26/72 · 4/144 · inaceptable · 0,703 | 13 | — | no |
+| clasica_v3_6 | Clásica | 37/74 · 4/148 · inaceptable · 0,768 | 27/72 · 4/144 · inaceptable · 0,663 | 13 | — | no |
+| PatchCore propio | IA sin entrenamiento | 54/74 · 5/148 · inaceptable · 0,943 | 44/72 · 4/144 · inaceptable · 0,924 | 248 | 32 | no |
+| PatchCore | IA sin entrenamiento | 63/74 · 6/148 · inaceptable · 0,947 | 43/72 · 6/144 · inaceptable · 0,905 | 2.899 | 295 | no |
+| PaDiM | IA sin entrenamiento | 47/74 · 5/148 · inaceptable · 0,892 | 31/72 · 5/144 · inaceptable · 0,882 | 192 | 18 | no |
+| AnomalyDINO | IA sin entrenamiento | error (memoria de la GPU) | error (memoria de la GPU) | — | — | no |
+| Dinomaly | IA con entrenamiento | 70/74 · 5/148 · inaceptable · 0,995 | 54/72 · 4/144 · inaceptable · 0,968 | 4.441 | 647 | no |
+| WinCLIP | IA con texto | 52/74 · 3/148 · inaceptable · 0,951 | 49/72 · 10/144 · inaceptable · 0,927 | 10.996 | 2.778 | no |
+
+Criterio: en la roja, 73 malas o más y 7 falsas o menos; en la amarillo-verde, 71 o más y 7 o menos. Los ms son la mediana de 50 piezas, con sus 5 vistas, y la columna de CPU es la media de los dos tipos. Archivos: `resultados/e13_metodos.csv`, `e13_eleccion.json`, `e13_metodos_puntajes.csv`, `e13_metodos_por_defecto.csv` y `e13_metodos_por_vista.csv`; gráfico, `docs/figuras/e13_estado_del_arte.png`; log, `resultados/e13.log`.
+
+**Lectura:**
+- **La clásica es la única que cabe en los 100 ms (13 ms), pero detecta de 26 a 37 malas por tipo.** Mide forma, y la mayoría de los defectos de MANTA son de superficie.
+- **La IA ordena mucho mejor** (AUC de 0,88 a 0,995). Pero con el umbral conformal, ninguna llega al 98 % de detección: la mejor, Dinomaly, detecta 70/74 y 54/72. Y ninguna cabe en 100 ms en la CPU.
+- **Falla por detección aunque el hardware fuera más rápido.** Con la cota del oráculo del [ADR 0019](0019-v6-metodo-de-seleccion.md) (`scripts/combinaciones.py`, solo informa), ni una regla «retira si alguno de los 7 métodos que corrieron retira», con el mejor umbral posible de 5 % de falsas para cada uno, llega al criterio: alcanzaría 71/74 en la roja y 62/72 en la amarillo-verde, y hacen falta 73 y 71. Hay malas que todos pierden: 3 abolladuras en la roja; en la amarillo-verde, 7 rayas, 2 manchas y 1 grieta. En la GTX 1060, el PatchCore propio (32 ms) y PaDiM (18 ms) sí cumplirían la latencia, pero no la detección.
+
+**Sobre los 100 ms.** Son una referencia de fabricante, no una norma: 600 piezas por minuto en una clasificadora óptica de golillas (tabla «De dónde salen los números»). Se midieron en la CPU del servidor, un Intel i3-9100 con 4 hilos. Como la decisión falla por detección, un computador más rápido no la cambiaría.
+
+**Límites del servidor, no de los métodos:**
+- **Dinomaly no cumple por latencia,** que es un requisito: 4.441 ms por pieza en la CPU, y tampoco cumple en la GTX 1060 (647 ms con 5 vistas). Además, la GPU de 6 GB limitó su detección: lote de 8 en vez de 32, y corte a las 2 h con 3.939 y 3.947 de 5.000 pasos. Su resultado es una **cota inferior**, no el desempeño del método. La corrida completa no se lanza, porque ni con la GPU cumpliría la latencia.
+- **AnomalyDINO quedó con error por falta de memoria de la GPU del servidor, no por el método,** en los dos tipos. El ajuste y los puntajes terminaron (los puntajes bajaron solos a lotes de 2 vistas). El error saltó al medir la latencia en la GPU: el código mete las 5 vistas de una pieza juntas, pidió 2,83 y 2,86 GiB y no tiene reintento. El protocolo solo regulaba la memoria en el ajuste, y este caso no calzaba en ninguna regla, así que contó como «no cumple». No cambia la decisión: su red base sola tarda 288 ms en CPU con 5 vistas (medición previa). La v6 mide la latencia vista por vista, con reintento.
+
+**Qué tan lejos se puede llevar este resultado:**
+- **Las dos golillas que deciden son de plástico moldeado,** no de metal. El resultado se traslada solo a medias a golillas metálicas, que fallan distinto y reflejan la luz de otra forma.
+- **MANTA se usa como CC BY-NC-SA 4.0:** sirve para este repo abierto, pero no para un cliente comercial.
+- **La licencia de EfficientAD, con la regla pareja** del [catastro](../estado-del-arte.md#regla-pareja-de-licencias-desde-la-v6): sigue fuera solo porque los pesos de su maestro no declaran licencia. Que Imagenette venga de ImageNet ya no es una razón para excluirlo, porque los pesos de PatchCore y PaDiM también vienen de ImageNet. Esto no cambia la lista de métodos de e13.
 
 ## Detalles de implementación de e13 (fijados antes de la corrida)
 Lo que el protocolo no decía y el código tuvo que fijar. Nada de esto se eligió mirando resultados de los sets que deciden.

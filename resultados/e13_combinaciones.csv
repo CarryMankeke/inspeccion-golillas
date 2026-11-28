@@ -1,0 +1,9 @@
+conjunto,n,pasa_100ms,pasa_falsas_e13,alcanza_cota,manta_red_washer·ms,manta_red_washer·cota_malas,manta_red_washer·malas_e13,manta_red_washer·falsas_e13,manta_yellow_green_washer·ms,manta_yellow_green_washer·cota_malas,manta_yellow_green_washer·malas_e13,manta_yellow_green_washer·falsas_e13
+clasica_4,1,False,False,False,13.130465493304657,36,36,4,12.661518470849842,28,26,4
+clasica_v3_6,1,False,False,False,13.131350016919896,38,37,4,12.701028026640415,29,27,4
+dinomaly,1,True,False,False,4240.265171014471,70,70,5,4641.798260505311,57,54,4
+padim,1,True,False,False,194.9356514960527,49,47,5,188.57113699777983,41,31,5
+patchcore,1,True,False,False,3140.0575269944966,65,63,6,2657.2147964907344,48,43,6
+patchcore_propio,1,True,False,False,264.9648975057062,61,54,5,231.1762600147631,50,44,4
+winclip,1,True,True,False,11133.181598503144,58,52,3,10859.494673990412,48,49,10
+clasica_4 o clasica_v3_6,2,False,False,False,26.26181551022455,38,37,7,25.362546497490257,29,27,4

@@ -1,0 +1,48 @@
+{
+ "solo_informa": true,
+ "deciden": [
+  "manta_red_washer",
+  "manta_yellow_green_washer"
+ ],
+ "metodos": [
+  "clasica_4",
+  "clasica_v3_6",
+  "patchcore_propio",
+  "patchcore",
+  "padim",
+  "dinomaly",
+  "winclip"
+ ],
+ "fuera": [
+  "manta_red_washer·anomalydino: error",
+  "manta_yellow_green_washer·anomalydino: error"
+ ],
+ "frente_pareto": [
+  "clasica_4",
+  "clasica_v3_6",
+  "dinomaly"
+ ],
+ "dominados": [
+  "padim",
+  "patchcore",
+  "patchcore_propio",
+  "winclip"
+ ],
+ "conjuntos_probados": 8,
+ "conjuntos_podados_sin_probar": 15,
+ "conjuntos_que_caben": [
+  "clasica_4",
+  "clasica_v3_6",
+  "clasica_4 o clasica_v3_6"
+ ],
+ "algun_conjunto_que_cabe_alcanza": false,
+ "sin_tope_de_latencia": {
+  "manta_red_washer": "71/74 malas (hacen falta 73)",
+  "manta_yellow_green_washer": "62/72 malas (hacen falta 71)"
+ },
+ "sin_tope_alcanza": false,
+ "perdidas_por_todos": {
+  "manta_red_washer": 3,
+  "manta_yellow_green_washer": 10
+ }
+}

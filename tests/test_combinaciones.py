@@ -6,7 +6,8 @@ from pathlib import Path
 import numpy as np
 
 _spec = importlib.util.spec_from_file_location(
-    "combinaciones", Path(__file__).resolve().parents[1] / "scripts" / "combinaciones.py")
+    "combinaciones", Path(__file__).resolve().parents[1] / "scripts" / "combinaciones.py"
+)
 comb = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(comb)
 
@@ -17,7 +18,7 @@ def test_punto_roc_deja_a_lo_mas_5_por_ciento_de_falsas():
     s = np.concatenate([buenas, malas])
     y = np.array([False] * 40 + [True] * 3)
     u, det, fa = comb.punto_roc(s, y)
-    assert fa == 2 and u == 37.0 and det == 1  # solo la de 38,5 supera el umbral
+    assert fa == 2 and u == 37.0 and det == 2  # 38,5 y 37,5 superan el umbral; 10 no
 
 
 def test_punto_roc_con_piezas_sin_medir():

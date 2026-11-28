@@ -60,6 +60,8 @@ Lee `resultados/e13_metodos_puntajes.csv` y `e13_metodos.csv`. No usa GPU. Escri
 
 Probado con los resultados del humo (Kaggle y Edge Impulse, 40 piezas por clase): el PatchCore propio queda solo en el frente, porque es el único que cumple los 100 ms y los demás no se distinguen de él en detección ni en falsas. Los 5 pares que lo contienen se podan sin probarse. Ni sin tope de latencia la unión alcanza en Edge Impulse: hay 3 malas que todos pierden. Pruebas: `tests/test_combinaciones.py`.
 
+**En MANTA, después de e13 (solo informa):** quedan en el frente de Pareto las dos clásicas (cumplen la latencia) y Dinomaly (la mejor detección); los demás quedan dominados. Solo 3 conjuntos caben en 100 ms (las clásicas y su unión), y 15 se podan sin probarse. Ni sin tope de latencia la unión de los 7 métodos que corrieron llega: 71/74 en la roja y 62/72 en la amarillo-verde, cuando hacen falta 73 y 71. Archivos: `resultados/e13_punto5.csv`, `e13_dominancia.csv`, `e13_combinaciones.*` y `e13_perdidas_*.csv`.
+
 ## Candidatos de la v6 (todos solo informan en MANTA)
 El [catastro](../estado-del-arte.md#8-lo-que-e13-no-compara-catastro-de-la-v6-por-familia-28-nov-2026) pasó por las etapas 2 y 3 del embudo todo lo que trae anomalib 2.7.1 y la clásica que falta. Quedan estos:
 

@@ -131,5 +131,28 @@
     "ei_tercio_falsas": "2/91",
     "sint": 1.0,
     "ms_cpu": 46.0
+  },
+  "enfoque_v5": {
+    "opcion": "ninguno",
+    "criterio": "ADR 0017: en cada golilla de MANTA, no detección ≤ 2 % y falsas ≤ 5 % (AIAG aceptable) con umbral conformal α = 3 %, y ≤ 100 ms por pieza en la CPU del servidor; gana la mayor detección media; empate ≤ 2 puntos → clásica, sin entrenamiento, con entrenamiento, texto; después, la más rápida",
+    "experimento": "e13",
+    "adoptado": false,
+    "ninguno_cumple": true,
+    "detalle": {
+      "MANTA roja·clasica_4": "36.0/74.0 malas, 4.0/148.0 falsas, inaceptable, 13 ms",
+      "MANTA roja·clasica_v3_6": "37.0/74.0 malas, 4.0/148.0 falsas, inaceptable, 13 ms",
+      "MANTA roja·patchcore_propio": "54.0/74.0 malas, 5.0/148.0 falsas, inaceptable, 265 ms",
+      "MANTA roja·patchcore": "63.0/74.0 malas, 6.0/148.0 falsas, inaceptable, 3140 ms",
+      "MANTA roja·padim": "47.0/74.0 malas, 5.0/148.0 falsas, inaceptable, 195 ms",
+      "MANTA roja·dinomaly": "70.0/74.0 malas, 5.0/148.0 falsas, inaceptable, 4240 ms",
+      "MANTA roja·winclip": "52.0/74.0 malas, 3.0/148.0 falsas, inaceptable, 11133 ms",
+      "MANTA amarillo-verde·clasica_4": "26.0/72.0 malas, 4.0/144.0 falsas, inaceptable, 13 ms",
+      "MANTA amarillo-verde·clasica_v3_6": "27.0/72.0 malas, 4.0/144.0 falsas, inaceptable, 13 ms",
+      "MANTA amarillo-verde·patchcore_propio": "44.0/72.0 malas, 4.0/144.0 falsas, inaceptable, 231 ms",
+      "MANTA amarillo-verde·patchcore": "43.0/72.0 malas, 6.0/144.0 falsas, inaceptable, 2657 ms",
+      "MANTA amarillo-verde·padim": "31.0/72.0 malas, 5.0/144.0 falsas, inaceptable, 189 ms",
+      "MANTA amarillo-verde·dinomaly": "54.0/72.0 malas, 4.0/144.0 falsas, inaceptable, 4642 ms",
+      "MANTA amarillo-verde·winclip": "49.0/72.0 malas, 10.0/144.0 falsas, inaceptable, 10859 ms"
+    }
   }
 }

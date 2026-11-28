@@ -27,7 +27,7 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 | [0014](adr/0014-n1-v3-varios-montajes.md) | N1 v3 · varios montajes | ningún candidato cumple (e11) |
 | [0015](adr/0015-n1-v4-opciones.md) | N1 v4 · umbral conformal | PatchCore 86/100 en Kaggle sin falsas; ningún candidato cumple (e12) |
 | [0016](adr/0016-n1-v5-fotos-propias.md) | N1 v5 · un candidato fijado y 180 fotos propias (rechazada) | la v5 va con datasets públicos de varios tipos de golilla ([ADR 0017](adr/0017-n0-v2-estado-del-arte.md)) |
-| [0017](adr/0017-n0-v2-estado-del-arte.md) | N0 v2 y N1 v5 · estado del arte: clásica contra IA en varios tipos de golilla (aceptada) | 8 métodos y 2 tipos de MANTA que deciden; requisitos del AIAG MSA y la VDI 2632-3, fijados antes de bajar los sets de prueba |
+| [0017](adr/0017-n0-v2-estado-del-arte.md) | N0 v2 y N1 v5 · estado del arte: clásica contra IA en varios tipos de golilla (aceptada; e13: **ninguno cumple**) | 8 métodos y 2 tipos de MANTA que deciden; requisitos del AIAG MSA y la VDI 2632-3, fijados antes de bajar los sets de prueba |
 | [0018](adr/0018-p0-alimentacion-encimadas.md) | P0 · alimentación y golillas encimadas, con una cámara lateral (propuesta) | catastro de alimentadores de la industria |
 | [0019](adr/0019-v6-metodo-de-seleccion.md) | v6 · el embudo: elegir métodos y combinaciones sin probarlas todas (propuesta) | dominancia con McNemar y cota del oráculo (`scripts/combinaciones.py`, solo informa en MANTA) |
 | [0020](adr/0020-regla-justificacion-de-valores.md) | Regla: cada valor lleva su justificación (aceptada) | [auditoría de 52 valores](valores.md) |

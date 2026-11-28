@@ -51,8 +51,11 @@ def leer():
     P = pd.read_csv(RESULTADOS / f"e13_metodos_puntajes{SUF}.csv")
     T = pd.read_csv(RESULTADOS / f"e13_metodos{SUF}.csv")
     ms = {(r.conjunto, r.metodo): r.ms_cpu for r in T.itertuples()}
-    fuera = [f"{r.conjunto}·{r.metodo}: {'no aplica' if not r.aplica else 'error'}" for r in T.itertuples()
-             if not r.aplica or isinstance(getattr(r, "error", None), str)]
+    fuera = [
+        f"{r.conjunto}·{r.metodo}: {'no aplica' if not r.aplica else 'error'}"
+        for r in T.itertuples()
+        if not r.aplica or isinstance(getattr(r, "error", None), str)
+    ]
     return P, ms, fuera
 
 
@@ -80,8 +83,11 @@ def mcnemar(a_bien: np.ndarray, b_bien: np.ndarray) -> int:
 
 def main():
     P, ms, fuera = leer()
-    metodos = [m for m in P.metodo.unique() if all(((c, m) in ms) and ((P.conjunto == c) & (P.metodo == m)).any()
-                                                   for c in DECIDEN)]
+    metodos = [
+        m
+        for m in P.metodo.unique()
+        if all(((c, m) in ms) and ((P.conjunto == c) & (P.metodo == m)).any() for c in DECIDEN)
+    ]
     R, D = {}, {}
     filas_roc, perdidas, pares = [], [], []
     for c in DECIDEN:
@@ -95,17 +101,39 @@ def main():
         for m in metodos:
             u, det, fa = punto_roc(S[m].s.to_numpy(float), mala)
             D[c][m] = S[m].s.to_numpy(float) > u
-            filas_roc.append(dict(conjunto=c, metodo=m, umbral_5=u, malas_5=det, falsas_5=fa, n_malas=int(mala.sum()),
-                                  n_buenas=int((~mala).sum()), malas_e13=int(R[c][m][mala].sum()),
-                                  falsas_e13=int(R[c][m][~mala].sum()), ms_cpu=ms[(c, m)]))
+            filas_roc.append(
+                dict(
+                    conjunto=c,
+                    metodo=m,
+                    umbral_5=u,
+                    malas_5=det,
+                    falsas_5=fa,
+                    n_malas=int(mala.sum()),
+                    n_buenas=int((~mala).sum()),
+                    malas_e13=int(R[c][m][mala].sum()),
+                    falsas_e13=int(R[c][m][~mala].sum()),
+                    ms_cpu=ms[(c, m)],
+                )
+            )
         perdida_todos = mala & ~np.any([D[c][m] for m in metodos], axis=0)
-        perdidas += [dict(conjunto=c, pieza=p, defecto=d) for p, d in zip(np.array(piezas)[perdida_todos],
-                                                                           defecto[perdida_todos])]
+        perdidas += [
+            dict(conjunto=c, pieza=p, defecto=d)
+            for p, d in zip(np.array(piezas)[perdida_todos], defecto[perdida_todos])
+        ]
         for a, b in combinations(metodos, 2):
             pa, pb = mala & ~D[c][a], mala & ~D[c][b]
             union = int((pa | pb).sum())
-            pares.append(dict(conjunto=c, a=a, b=b, perdidas_a=int(pa.sum()), perdidas_b=int(pb.sum()),
-                              perdidas_ambos=int((pa & pb).sum()), jaccard=(pa & pb).sum() / union if union else 1.0))
+            pares.append(
+                dict(
+                    conjunto=c,
+                    a=a,
+                    b=b,
+                    perdidas_a=int(pa.sum()),
+                    perdidas_b=int(pb.sum()),
+                    perdidas_ambos=int((pa & pb).sum()),
+                    jaccard=(pa & pb).sum() / union if union else 1.0,
+                )
+            )
         R[c]["_mala"], D[c]["_mala"] = mala, mala
 
     # ---- 2. dominancia, con los umbrales conformales de e13
@@ -138,9 +166,15 @@ def main():
             y = R[c]["_mala"]
             ret_e13 = np.any([R[c][m] for m in conj], axis=0)
             ret_5 = np.any([D[c][m] for m in conj], axis=0)
-            f[c] = dict(ms=sum(ms[(c, m)] for m in conj), malas_e13=int(ret_e13[y].sum()),
-                        falsas_e13=int(ret_e13[~y].sum()), n_buenas=int((~y).sum()), cota_malas=int(ret_5[y].sum()),
-                        n_malas=int(y.sum()), alcanza=bool(ret_5[y].sum() >= k_det(c)))
+            f[c] = dict(
+                ms=sum(ms[(c, m)] for m in conj),
+                malas_e13=int(ret_e13[y].sum()),
+                falsas_e13=int(ret_e13[~y].sum()),
+                n_buenas=int((~y).sum()),
+                cota_malas=int(ret_5[y].sum()),
+                n_malas=int(y.sum()),
+                alcanza=bool(ret_5[y].sum() >= k_det(c)),
+            )
         return f
 
     def podado(f):
@@ -159,10 +193,16 @@ def main():
                 continue
             f = evaluar(conj)
             lat, fa = podado(f)
-            filas.append(dict(conjunto=" o ".join(conj), n=k, pasa_100ms=lat, pasa_falsas_e13=fa,
-                              alcanza_cota=all(v["alcanza"] for v in f.values()),
-                              **{f"{c}·{x}": v[x] for c, v in f.items() for x in ("ms", "cota_malas", "malas_e13",
-                                                                                   "falsas_e13")}))
+            filas.append(
+                dict(
+                    conjunto=" o ".join(conj),
+                    n=k,
+                    pasa_100ms=lat,
+                    pasa_falsas_e13=fa,
+                    alcanza_cota=all(v["alcanza"] for v in f.values()),
+                    **{f"{c}·{x}": v[x] for c, v in f.items() for x in ("ms", "cota_malas", "malas_e13", "falsas_e13")},
+                )
+            )
             if not (lat or fa):
                 nuevos.append(conj)
         vivos = nuevos
@@ -179,13 +219,19 @@ def main():
     pd.DataFrame(perdidas).to_csv(RESULTADOS / f"e13_perdidas_todos{SUF}.csv", index=False)
     caben = C[~C.pasa_100ms & ~C.pasa_falsas_e13]
     resumen = dict(
-        solo_informa=True, deciden=list(DECIDEN), metodos=metodos, fuera=fuera,
-        frente_pareto=[m for m in metodos if m not in dominados], dominados=dominados,
-        conjuntos_probados=len(C), conjuntos_podados_sin_probar=n_podados,
+        solo_informa=True,
+        deciden=list(DECIDEN),
+        metodos=metodos,
+        fuera=fuera,
+        frente_pareto=[m for m in metodos if m not in dominados],
+        dominados=dominados,
+        conjuntos_probados=len(C),
+        conjuntos_podados_sin_probar=n_podados,
         conjuntos_que_caben=caben.conjunto.tolist(),
         algun_conjunto_que_cabe_alcanza=bool(caben.alcanza_cota.any()) if len(caben) else False,
-        sin_tope_de_latencia={c: f"{v['cota_malas']}/{v['n_malas']} malas (hacen falta {k_det(c)})"
-                              for c, v in todos.items()},
+        sin_tope_de_latencia={
+            c: f"{v['cota_malas']}/{v['n_malas']} malas (hacen falta {k_det(c)})" for c, v in todos.items()
+        },
         sin_tope_alcanza=all(v["alcanza"] for v in todos.values()),
         perdidas_por_todos={c: int(sum(p["conjunto"] == c for p in perdidas)) for c in DECIDEN},
     )

@@ -1,0 +1,13 @@
+{
+ "elegido": null,
+ "ninguno_cumple": true,
+ "adoptado": false,
+ "alfa": 0.03,
+ "deciden": [
+  "manta_red_washer",
+  "manta_yellow_green_washer"
+ ],
+ "ms_max": 100.0,
+ "minutos": 381.7,
+ "dispositivo": "NVIDIA GeForce GTX 1060 6GB"
+}
