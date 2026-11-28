@@ -12,3 +12,5 @@ docs/.obsidian/workspace*.json
 docs/.obsidian/cache
 # datasets públicos: se bajan con scripts/descargar_datos.py, no se suben
 data/publico/
+# fotos originales de la sesión v5: se sellan por SHA-256 (ADR 0016), no se suben
+data/propio_v5/originales/

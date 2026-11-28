@@ -53,6 +53,8 @@ Si ninguno cumple 1 y 2, gana el de mayor detección media entre los que cumplen
 
 ## Set ciego nuevo: 65 fotos propias
 > **Cambio del 27 nov 2026 (ADR 0015):** las buenas de calibración suben de 15 a 50, para que el umbral conformal funcione también en el montaje propio. Las 25 buenas y 25 malas de prueba no cambian.
+>
+> **Cambio del 27 nov 2026 (ADR 0016):** la v5 reemplaza este plan por una sola sesión de 180 fotos (20 ajustan, 100 calibran, y 30 buenas y 30 malas de prueba), con un candidato fijado de antemano. El criterio de este ADR no cambia.
 
 - **Montaje** del [ADR 0001](0001-n0-objetivo.md): golilla oscura sobre papel claro, la cámara a la altura de siempre, y la posición y el giro al azar. Todas las fotos se toman el mismo día.
 - **15 buenas para calibrar**, como las piezas patrón al empezar un turno. No se cuentan en el resultado.

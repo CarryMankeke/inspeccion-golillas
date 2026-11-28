@@ -22,6 +22,9 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 | [0011](adr/0011-p6-decision.md) | P6 · Mahalanobis + Hotelling | 6/6 malas, 0/15 falsas |
 | [0012](adr/0012-p7-linea.md) | P7 · encoder en la cinta | 100 % retiradas hasta 1.500 mm/s |
 | [0013](adr/0013-datos-publicos.md) | datos públicos y prueba ciega | Edge Impulse: clásica 31 %, PatchCore 67 % (AUC 0,75 contra 0,95) |
+| [0014](adr/0014-n1-v3-varios-montajes.md) | N1 v3 · varios montajes | ningún candidato cumple (e11) |
+| [0015](adr/0015-n1-v4-opciones.md) | N1 v4 · umbral conformal | PatchCore 86/100 en Kaggle sin falsas; ningún candidato cumple (e12) |
+| [0016](adr/0016-n1-v5-fotos-propias.md) | N1 v5 · un candidato fijado y 180 fotos propias (propuesta) | criterio fijado antes de las fotos; [guía de la sesión](sesion-fotos-v5.md) |
 
 ## Cómo está escrito cada ADR
 Contexto → opciones → criterio (escrito en el script antes de ver el ranking) → tabla de resultados → decisión → revisiones, si el criterio o el código se corrigió. Cada gráfico sale de un script en `experimentos/`, y cada decisión queda también en `resultados/decisiones.json`.

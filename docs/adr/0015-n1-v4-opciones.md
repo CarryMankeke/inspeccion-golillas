@@ -120,6 +120,8 @@ La v4 confirma que el umbral era la falla de PatchCore. Lo que queda ya no depen
 
 **Análisis post hoc (no decide la v4).** Después de la corrida se armaron, con los puntajes de `e12_puntajes.csv`, las 12 fusiones posibles entre una clásica y un PatchCore, con α/2 por parte. Solo una cumple los requisitos 1 y 2: **clasica_4 + PatchCore l2+l3 fijo**, con 6/6 y 1/15 propias, 42/42 en giros, 81/100 malas y 5/100 falsas en Kaggle, 2/91 en el tercio de Edge Impulse y 46 ms. Queda al límite en dos requisitos (1/15 y 5/100), y salió de mirar 12 combinaciones, así que esos números son optimistas. No pudo salir en la v4 porque la regla elige primero una clásica por familia, y ganó v3_6 por tener menos falsas en promedio. Por eso solo puede probarse con datos nuevos. Es el candidato natural para fijar en la v5 antes de tomar las fotos.
 
+> **27 nov 2026:** la v5 fija este candidato, su criterio y la sesión de fotos en el [ADR 0016](0016-n1-v5-fotos-propias.md).
+
 **Tamaño de la calibración propia.** Con α/2 = 1,5 % por parte, el umbral de la fusión existe solo con 66 buenas o más que calibren (1/(n+1) ≤ 1,5 %). Con las 34 del plan de arriba no existe. Entre 66 y 132, cada parte usa el máximo de las que calibran, y su tasa real sigue una Beta(1, n) (Bates et al., Prop. 1). Si las dos partes fueran independientes, la tasa de la fusión pasaría del 5 % con probabilidad 15 % para n = 66 y 4 % para n = 100 (simulación propia; con partes correlacionadas es menor).
 
 ## Lo que no se hace
