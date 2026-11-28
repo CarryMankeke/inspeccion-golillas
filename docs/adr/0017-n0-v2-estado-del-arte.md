@@ -49,9 +49,9 @@ Este ADR remite al ADR 0001 y cierra el ADR 0004 con la decisión de e13.
 |---|---|---|---|---|---|
 | MANTA Tiny `red_washer` | Anillo plano moldeado, no metálico, delgado y de agujero grande; cabe en 3 × 11 × 11 mm | 578 | 148 buenas y 74 malas | CC BY-NC-SA 4.0 (ver abajo) | **Decide** |
 | MANTA Tiny `yellow_green_washer` | Anillo plano moldeado, no metálico, grueso y de agujero chico; cabe en 3 × 8 × 8 mm | 584 | 144 buenas y 72 malas | CC BY-NC-SA 4.0 | **Decide** |
-| Roboflow saksit «metal washer» | Golillas de metal según su nombre, 313 fotos (train 194, valid 60, test 59) | Por contar | Por contar | Dominio público | **Decide** si pasa la regla de tamaño; si no, informa |
-| Roboflow renuka-p | Golillas planas de bronce, 151 fotos (60, 45 y 46) | Por contar | Por contar | CC BY 4.0 | Igual |
-| Roboflow «Washer Classifier» | `washer_ok` y `washer_ng`, 443 fotos | Por contar | Por contar | CC BY 4.0 | Igual |
+| Roboflow saksit «metal washer» (v4) | Golillas de metal según su nombre, 313 fotos (train 194, valid 60, test 59) | 181 | 41 buenas y 17 malas | Dominio público | Informa: no pasa la regla de tamaño |
+| Roboflow renuka-p (v3) | Golillas planas de bronce, 151 fotos (60, 45 y 46) | 9 | 3 buenas y 43 malas | CC BY 4.0 | Informa: no pasa la regla |
+| Roboflow «Washer Classifier» (v3) | `washer_ok` y `washer_ng`, 443 fotos (377, 54 y 12) | 271 | 9 buenas y 3 malas | CC BY 4.0 | Informa: no pasa la regla |
 | Edge Impulse | Planas, dos fondos | 273 | 88 buenas y 103 malas, ya vistas en e10 | BSD 3-Clause Clear | Desarrolla |
 | Kaggle «Simplified washers» | Dibujos | 1.000 | 100 y 100 | CC BY-SA 4.0 | Desarrolla |
 | 21 fotos propias | Planas, metálicas, oscuras sobre papel | 15 | 6 malas | MIT | Desarrolla y sirve de control |
@@ -68,6 +68,18 @@ Los conteos de MANTA Tiny vienen de `distribution.md`, en su depósito de figsha
 **Regla de tamaño para Roboflow (fijada antes de contar).** Un set de Roboflow decide solo si, contando las etiquetas y sin abrir ninguna imagen, sus particiones train y valid traen 66 piezas buenas o más, y su partición test trae 20 buenas o más y 20 malas o más. Con 66 buenas, 33 ajustan y 33 calibran, el mínimo para α = 3 %. Si no pasa la regla, el set solo informa su AUC.
 
 **Qué es una pieza en Roboflow.** Cada caja anotada es una pieza, y se recorta con un margen del 10 %. Las copias aumentadas de una misma foto (el mismo nombre de origen antes de `.rf.`) van siempre al mismo grupo. Si existe una versión sin aumentos, se exporta esa.
+
+> **Cambio del 28 nov 2026, al contar las etiquetas y sin abrir ninguna imagen:** la pieza pasa a ser **la foto entera**. En los JSON, cada foto trae una sola golilla (en saksit, 193 de 194 fotos de train tienen una caja), y las cajas de algunos defectos marcan solo el defecto: en saksit, `bent` y `color` cubren una mediana del 6 % de la foto, contra el 76 % de `good`; en renuka-p, `DENT` cubre el 0,3 %. Recortar esas cajas habría juzgado un trozo de golilla. Una foto es mala si tiene alguna caja de defecto, buena si todas sus cajas son de la clase buena, y queda fuera si no tiene cajas (1 en el test de saksit). Las malas de train y valid no se usan. Hubo varias versiones sin aumentos, y se exportó la más reciente. El cambio no toca la decisión, porque ningún set de Roboflow pasa la regla de tamaño (abajo).
+
+**Resultado de la regla de tamaño (28 nov 2026, contando etiquetas, sin abrir imágenes):**
+
+| Set (versión) | Buenas en train + valid (≥ 66) | Buenas de prueba (≥ 20) | Malas de prueba (≥ 20) | Papel |
+|---|---|---|---|---|
+| saksit «metal washer» (v4) | 181 | 41 | **17** | Informa |
+| renuka-p «Washer Defect Detection» (v3) | **9** | **3** | 43 | Informa |
+| «Washer Classifier» (v3) | 271 | **9** | **3** | Informa |
+
+**Ningún set de Roboflow decide.** Deciden solo los dos tipos de MANTA, como preveía el primer riesgo de la lista. Los tres quedan sellados (`data/sellos/roboflow_*`) e informan su AUC. Los nombres de origen se repiten entre particiones (por ejemplo, `000_png` en train, valid y test de saksit), pero como ninguna versión tiene aumentos, son fotos distintas con el mismo nombre de archivo; la partición los junta igual, por prudencia.
 
 **Lo que ya se vio antes de bajar nada:**
 - Roboflow: el 27 nov, unas 6 miniaturas de cada set (renuka-p, saksit y project-1), en sus páginas.

@@ -17,6 +17,7 @@ una huella no calza, y `verificar` revisa además que no sobre ni falte ningún 
 from __future__ import annotations
 
 import csv
+import json
 from collections import Counter
 from pathlib import Path
 
@@ -101,6 +102,65 @@ def sellar_manta(tipo: str, raiz: Path = PUBLICO / MANTA, destino: Path = SELLOS
     return sellar(f"manta_{tipo}", filas, raiz, destino)
 
 
+# ---------------------------------------------------------------- Roboflow
+ROBOFLOW = {  # clase que cuenta como buena en cada set (ADR 0017)
+    "roboflow_saksit_metal_washer": dict(formato="coco", buena="good"),
+    "roboflow_renuka_washer_defect": dict(formato="coco", buena="No Defect"),
+    "roboflow_washer_classifier": dict(formato="carpetas", buena="washer_ok"),
+}
+PARTICION = {"train": "entrenamiento", "valid": "entrenamiento", "test": "prueba"}
+REGLA = dict(entrenamiento=66, buenas=20, malas=20)  # regla de tamaño del ADR 0017, fijada antes de contar
+
+
+def piezas_roboflow(nombre: str, raiz: Path | None = None) -> list[dict]:
+    """Las piezas de un set de Roboflow, leyendo solo el JSON COCO o los nombres de carpeta.
+
+    Cada foto trae una sola golilla, así que la pieza es la foto: es mala si tiene alguna caja de
+    defecto y buena si todas sus cajas son de la clase buena; una foto sin cajas queda fuera. Las
+    malas de train y valid no se usan (el N0 v2 calibra solo con buenas). El origen es el nombre
+    antes de «.rf.», que junta las copias aumentadas de una foto (aquí no hay: las versiones
+    exportadas no tienen aumentos, y los nombres repetidos son fotos distintas con el mismo nombre).
+    """
+    cfg, raiz = ROBOFLOW[nombre], Path(raiz or PUBLICO / nombre)
+    filas = []
+    for split, particion in PARTICION.items():
+        if cfg["formato"] == "coco":
+            coco = json.loads((raiz / split / "_annotations.coco.json").read_text(encoding="utf-8"))
+            cats = {c["id"]: c["name"] for c in coco["categories"]}
+            clases: dict[int, set[str]] = {i["id"]: set() for i in coco["images"]}
+            for a in coco["annotations"]:
+                clases[a["image_id"]].add(cats[a["category_id"]])
+            fotos = [(i["file_name"], clases[i["id"]]) for i in coco["images"]]
+        else:
+            fotos = [(f"{c.name}/{p.name}", {c.name}) for c in sorted((raiz / split).iterdir()) if c.is_dir()
+                     for p in sorted(c.iterdir()) if p.is_file()]
+        for archivo, cl in sorted(fotos):
+            if not cl:
+                continue
+            defectos = sorted(cl - {cfg["buena"]})
+            mala = bool(defectos)
+            if mala and particion == "entrenamiento":
+                continue
+            nombre_foto = Path(archivo).name
+            filas.append(dict(pieza=Path(split, archivo).with_suffix("").as_posix(), particion=particion,
+                              clase="mala" if mala else "buena", defecto="+".join(defectos) or "ninguno",
+                              archivo=f"{split}/{archivo}", mascara="",
+                              origen=nombre_foto.split(".rf.")[0], caja=""))
+    return filas
+
+
+def regla_tamano(filas: list[dict]) -> dict:
+    """Conteos de la regla de tamaño y si el set la pasa (entonces decide; si no, solo informa)."""
+    n = dict(entrenamiento=sum(f["particion"] == "entrenamiento" for f in filas),
+             buenas=sum(f["particion"] == "prueba" and f["clase"] == "buena" for f in filas),
+             malas=sum(f["particion"] == "prueba" and f["clase"] == "mala" for f in filas))
+    return dict(n, decide=all(n[k] >= v for k, v in REGLA.items()))
+
+
+def sellar_roboflow(nombre: str, raiz: Path | None = None, destino: Path = SELLOS) -> dict[str, int]:
+    return sellar(nombre, piezas_roboflow(nombre, raiz), Path(raiz or PUBLICO / nombre), destino)
+
+
 # ---------------------------------------------------------------- sello genérico
 def sellar(conjunto: str, filas: list[dict], raiz: Path, destino: Path = SELLOS,
            semilla: int = SEMILLA) -> dict[str, int]:
@@ -171,10 +231,12 @@ def cargar(conjunto: str, grupo: str, raiz: Path, destino: Path = SELLOS) -> lis
     return filas
 
 
-def verificar(conjunto: str, raiz: Path, carpetas: list[str], destino: Path = SELLOS) -> dict[str, int]:
-    """Comprueba las huellas de los tres grupos y que en `carpetas` no sobre ni falte ningún archivo."""
+def verificar(conjunto: str, raiz: Path, carpetas: list[str] | None = None, destino: Path = SELLOS) -> dict[str, int]:
+    """Comprueba las huellas de los tres grupos y, si se dan `carpetas`, que en ellas no sobre ni falte nada."""
     raiz = Path(raiz)
     n = {g: len(cargar(conjunto, g, raiz, destino)) for g in GRUPOS}
+    if carpetas is None:
+        return n
     selladas = {r[c] for g in GRUPOS for r in leer(conjunto, g, destino) for c in ("archivo", "mascara") if r[c]}
     hay = {p.relative_to(raiz).as_posix() for c in carpetas for p in (raiz / c).rglob("*")
            if p.is_file() and p.name != ".DS_Store"}

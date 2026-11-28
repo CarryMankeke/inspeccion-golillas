@@ -1,0 +1,6 @@
+pieza,grupo,clase,defecto,archivo,bytes,sha256,mascara,mascara_bytes,mascara_sha256,origen,caja
+train/converted-3-_jpg.rf.6009e14995db75acc60aae0173ddf5d2,ajusta,buena,ninguno,train/converted-3-_jpg.rf.6009e14995db75acc60aae0173ddf5d2.jpg,256185,98758c37e357291fc0f5f23be9cb92a6abc0808dec7fd67f7e6ae028d0150971,,,,converted-3-_jpg,
+train/converted-5-_jpg.rf.e7967d3556d9c79eb8c6faa4835ff468,ajusta,buena,ninguno,train/converted-5-_jpg.rf.e7967d3556d9c79eb8c6faa4835ff468.jpg,1058133,e7ff15990c7c10a64770373ef1fbd3121c01b8e380941ad2faca02d9f1cd59fe,,,,converted-5-_jpg,
+train/converted-6-_jpg.rf.0e52bf326db2f6fe406eba7c0faa5dbb,ajusta,buena,ninguno,train/converted-6-_jpg.rf.0e52bf326db2f6fe406eba7c0faa5dbb.jpg,1039192,bed4a54aa7ea32b72846c9adbb9571e42a6c5ed7bebfa28f3f58e4029bb7665d,,,,converted-6-_jpg,
+valid/converted-4-_jpg.rf.4fd091bbfe844c7b571586adb8c5866f,ajusta,buena,ninguno,valid/converted-4-_jpg.rf.4fd091bbfe844c7b571586adb8c5866f.jpg,1038368,299c1d5ae70f0affd02c9c1ea2d6b1a19e7f32ceb92d621f4682d63f47f67e04,,,,converted-4-_jpg,
+valid/converted-8-_jpg.rf.a4db358e64ac306b0c924612c2a38e93,ajusta,buena,ninguno,valid/converted-8-_jpg.rf.a4db358e64ac306b0c924612c2a38e93.jpg,1039357,d3ee622f4968dbea33c2f1036cd3f17fab76a60d285e2014b56cdcb0bf76cb74,,,,converted-8-_jpg,

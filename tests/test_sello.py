@@ -87,3 +87,37 @@ def test_una_mala_sin_mascara_detiene_el_sello(tmp_path):
     next((raiz / "mechanics" / "red_washer" / "ground_truth" / "stain").iterdir()).unlink()
     with pytest.raises(FileNotFoundError, match="máscara"):
         sello.piezas_manta("red_washer", raiz)
+
+
+def _coco(raiz):
+    """Un set COCO falso: 1 foto buena y 1 mala por split, más una foto sin cajas en test."""
+    import json
+
+    cats = [{"id": 0, "name": "todas"}, {"id": 1, "name": "bent"}, {"id": 2, "name": "good"}]
+    for split, extra in (("train", []), ("valid", []), ("test", ["vacia_png.rf.c.jpg"])):
+        (raiz / split).mkdir(parents=True)
+        nombres = [f"{split}0_png.rf.a.jpg", f"{split}1_png.rf.b.jpg", *extra]
+        imgs = [{"id": i, "file_name": n, "width": 10, "height": 10} for i, n in enumerate(nombres)]
+        anns = [{"id": 0, "image_id": 0, "category_id": 2, "bbox": [0, 0, 9, 9]},
+                {"id": 1, "image_id": 1, "category_id": 1, "bbox": [0, 0, 2, 2]},
+                {"id": 2, "image_id": 1, "category_id": 2, "bbox": [0, 0, 9, 9]}]
+        (raiz / split / "_annotations.coco.json").write_text(json.dumps(
+            {"categories": cats, "images": imgs, "annotations": anns}))
+        for n in nombres:
+            (raiz / split / n).write_bytes(n.encode())
+    return raiz
+
+
+def test_roboflow_la_pieza_es_la_foto_y_las_malas_de_entrenamiento_no_se_usan(tmp_path, monkeypatch):
+    monkeypatch.setitem(sello.ROBOFLOW, "falso", dict(formato="coco", buena="good"))
+    raiz = _coco(tmp_path / "falso")
+    filas = sello.piezas_roboflow("falso", raiz)
+    assert [(f["pieza"], f["particion"], f["clase"], f["defecto"]) for f in filas] == [
+        ("train/train0_png.rf.a", "entrenamiento", "buena", "ninguno"),
+        ("valid/valid0_png.rf.a", "entrenamiento", "buena", "ninguno"),
+        ("test/test0_png.rf.a", "prueba", "buena", "ninguno"),
+        ("test/test1_png.rf.b", "prueba", "mala", "bent")]
+    assert sello.regla_tamano(filas) == dict(entrenamiento=2, buenas=1, malas=1, decide=False)
+    n = sello.sellar_roboflow("falso", raiz, tmp_path / "sellos")
+    assert n == {"ajusta": 1, "calibra": 1, "prueba": 2}
+    assert sello.verificar("falso", raiz, destino=tmp_path / "sellos") == n

@@ -79,6 +79,40 @@ FUENTES = {
         licencia="CC BY-SA 4.0",
         fuente="https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection",
     ),
+    # Los tres de Roboflow del ADR 0017: la versión más reciente sin aumentos, exportada a mano con la
+    # cuenta de Camilo el 28 nov 2026 (COCO; carpetas por clase en el de clasificación). Se descomprimen con
+    # `--zip <nombre> <archivo.zip>`, que comprueba el zip y deja la huella del árbol.
+    "roboflow_saksit_metal_washer": dict(
+        manual=True,
+        url="https://universe.roboflow.com/saksit-zdivw/metal-washer/dataset/4",  # v4, 313 fotos (194/60/59)
+        zip_bytes=9_962_256,
+        zip_sha256="60abd6f36ae470e8d5c351486525b007b15305bde575cd8f52f1fa91d3b07e6c",
+        archivos=318,
+        arbol_sha256="ddf2e98392cb16210c3be2aa252805b963f21443bdbb991fef32807c26824d09",  # fijada el 28 nov 2026
+        licencia="Dominio público",
+        fuente="https://universe.roboflow.com/saksit-zdivw/metal-washer",
+    ),
+    "roboflow_renuka_washer_defect": dict(
+        manual=True,
+        url="https://universe.roboflow.com/renuka-p/washer-defect-detection-ap9hk/dataset/3",  # v3, 151 (60/45/46)
+        zip_bytes=141_203_887,
+        zip_sha256="4cc9e9c7807eb9f1906f82ead63f08864572749d8edeac94cf3392c9715692e1",
+        archivos=156,
+        arbol_sha256="1efcb92040d737a2b0b8543218eb8a2059ab47933c974bc0e0c2732eb7437b37",  # fijada el 28 nov 2026
+        licencia="CC BY 4.0",
+        fuente="https://universe.roboflow.com/renuka-p/washer-defect-detection-ap9hk",
+    ),
+    "roboflow_washer_classifier": dict(
+        manual=True,
+        # v3, 443 fotos (377/54/12); es de clasificación, así que se exporta en carpetas por clase
+        url="https://universe.roboflow.com/cap-inspection-cioib/washer-classifier-fohnr/dataset/3",
+        zip_bytes=22_437_138,
+        zip_sha256="48e4022fa6a3c882b1ee9e666e801003dd9ef867f76aea21b13e9123889615bf",
+        archivos=445,
+        arbol_sha256="79b44acd79440f154fd6a115392f98f897969b8ade2a9823b8907ec6637253f5",  # fijada el 28 nov 2026
+        licencia="CC BY 4.0",
+        fuente="https://universe.roboflow.com/cap-inspection-cioib/washer-classifier-fohnr",
+    ),
 }
 
 
@@ -103,9 +137,27 @@ def verificar(nombre: str) -> None:
     if not carpeta.exists():
         sys.exit(f"{nombre}: no está en {carpeta}. Bájalo a mano desde {f['url']}.")
     h, n = huella_arbol(carpeta)
+    if f["arbol_sha256"] is None:
+        print(f"{nombre}: {n} archivos, huella del árbol {h} (fíjala en FUENTES)")
+        return
     if n != f["archivos"] or h != f["arbol_sha256"]:
         sys.exit(f"{nombre}: {n} archivos, huella {h}. No calza con la fijada; revisa la copia.")
     print(f"{nombre}: {n} archivos, huella del árbol correcta")
+
+
+def desde_zip(nombre: str, zip_: Path) -> None:
+    """Descomprime un zip exportado a mano en data/publico/<nombre>/, después de comprobar su tamaño y su huella."""
+    f, carpeta = FUENTES[nombre], DESTINO / nombre
+    if carpeta.exists():
+        sys.exit(f"{nombre}: ya está en {carpeta}; bórralo a mano si quieres descomprimirlo de nuevo")
+    if zip_.stat().st_size != f["zip_bytes"] or huella(zip_) != f["zip_sha256"]:
+        sys.exit(f"{zip_.name}: el tamaño o la huella no calzan con los fijados; no es el zip exportado")
+    with zipfile.ZipFile(zip_) as z:
+        for m in z.namelist():  # sin rutas absolutas ni "..": el zip es dato externo
+            if m.startswith("/") or ".." in Path(m).parts:
+                sys.exit(f"ruta sospechosa dentro del zip: {m}")
+        z.extractall(carpeta)
+    verificar(nombre)
 
 
 def descargar(nombre: str, forzar: bool = False) -> Path:
@@ -151,7 +203,11 @@ def main():
     p.add_argument("--lista", action="store_true")
     p.add_argument("--forzar", action="store_true")
     p.add_argument("--verificar", action="store_true", help="solo comprueba la huella de una copia manual")
+    p.add_argument("--zip", type=Path, help="zip exportado a mano para descomprimir en data/publico/<nombre>/")
     a = p.parse_args()
+    if a.zip:
+        desde_zip(a.nombres[0], a.zip)
+        return
     if a.lista or not a.nombres:
         for n, f in FUENTES.items():
             tam = "a mano" if f.get("manual") else f"{f['bytes'] / 1e6:.1f} MB"

@@ -7,6 +7,10 @@
 | `data/publico/csem_misd_washers/` | Honzátko et al., CSEM-MISD (2021), https://zenodo.org/records/5513769 | CC BY-NC-ND 4.0: se usa sin modificar ni redistribuir | No: `python scripts/descargar_datos.py csem_misd_washers` |
 | `data/publico/roboflow_massmep_washers/` | MassMEP, «Washer Defects» v1 en Roboflow Universe, https://universe.roboflow.com/massmep/washer-defects-3usoj (exportado en COCO el 27 nov 2026) | CC BY 4.0 | No: pide cuenta; se exporta a mano y se comprueba con `python scripts/descargar_datos.py --verificar roboflow_massmep_washers` |
 | `data/publico/kaggle_simplified_washers/` | Thibdx, «Simplified washers for anomaly detection», versión 5 (2022), https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection | CC BY-SA 4.0 | No: pide cuenta; se baja con el conector o la CLI de Kaggle y se comprueba con `python scripts/descargar_datos.py --verificar kaggle_simplified_washers` |
+| `data/publico/manta_tiny_mechanics/` (solo `red_washer` y `yellow_green_washer`) | Fan et al., MANTA Tiny (CVPR 2025), https://figshare.com/articles/dataset/manta-tiny/27934938 (bajado el 28 nov 2026) | CC BY-NC-SA 4.0 según la página del proyecto (figshare marca CC BY 4.0; se respeta la más restrictiva) | No: `python scripts/descargar_datos.py manta_tiny_mechanics` |
+| `data/publico/roboflow_saksit_metal_washer/` | Saksit, «metal washer» v4 en Roboflow Universe, https://universe.roboflow.com/saksit-zdivw/metal-washer (exportado en COCO el 28 nov 2026) | Dominio público | No: pide cuenta; se exporta a mano y se descomprime con `python scripts/descargar_datos.py roboflow_saksit_metal_washer --zip <zip>` |
+| `data/publico/roboflow_renuka_washer_defect/` | renuka-p, «Washer Defect Detection» v3 en Roboflow Universe, https://universe.roboflow.com/renuka-p/washer-defect-detection-ap9hk (exportado en COCO el 28 nov 2026) | CC BY 4.0 | Igual, con `roboflow_renuka_washer_defect` |
+| `data/publico/roboflow_washer_classifier/` | Cap inspection, «Washer Classifier» v3 en Roboflow Universe, https://universe.roboflow.com/cap-inspection-cioib/washer-classifier-fohnr (exportado en carpetas por clase el 28 nov 2026) | CC BY 4.0 | Igual, con `roboflow_washer_classifier` |
 
 ## Aviso de Edge Impulse
 
@@ -42,6 +46,18 @@ NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
 ## Aviso de Kaggle «Simplified washers»
 
 «Simplified washers for anomaly detection», de Thibdx, en Kaggle (https://www.kaggle.com/datasets/thibdx/simplified-washers-for-anomaly-detection), con licencia CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/). Son dibujos hechos en Affinity Publisher, no fotos. Ninguna de sus imágenes está en el repo; si alguna figura llega a mostrar una, esa figura queda bajo CC BY-SA 4.0.
+
+## Aviso de MANTA
+
+«MANTA Tiny», de Fan et al. (CVPR 2025), en figshare (https://figshare.com/articles/dataset/manta-tiny/27934938). figshare lo publica con CC BY 4.0 y la página del proyecto (https://grainnet.github.io/MANTA) con CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/); mientras los autores no lo aclaren, se usa como CC BY-NC-SA 4.0. Ninguna de sus imágenes está en el repo; si alguna figura llega a mostrar una, esa figura queda bajo CC BY-NC-SA 4.0 y sin uso comercial. Los CSV de `data/sellos/manta_*` solo traen nombres de archivo y huellas.
+
+## Avisos de Roboflow (ADR 0017)
+
+- «metal washer», de Saksit, en Roboflow Universe (https://universe.roboflow.com/saksit-zdivw/metal-washer), versión 4, en dominio público.
+- «Washer Defect Detection», de renuka-p, en Roboflow Universe (https://universe.roboflow.com/renuka-p/washer-defect-detection-ap9hk), versión 3, con licencia CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+- «Washer Classifier», de Cap inspection, en Roboflow Universe (https://universe.roboflow.com/cap-inspection-cioib/washer-classifier-fohnr), versión 3, con licencia CC BY 4.0.
+
+Ninguna de sus imágenes está en el repo. Los CSV de `data/sellos/roboflow_*` solo traen nombres de archivo y huellas.
 
 ## Cita de Edge Impulse
 

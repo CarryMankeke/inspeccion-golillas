@@ -4,6 +4,9 @@ Uso:  python scripts/sellar.py manta
           Parte las buenas de entrenamiento de red_washer y yellow_green_washer en ajusta y
           calibra (semilla 0) y escribe data/sellos/manta_<tipo>/{ajusta,calibra,prueba}.csv
           con la SHA-256 de cada archivo y de cada máscara. Los CSV van en un commit propio.
+      python scripts/sellar.py roboflow
+          Lo mismo con los tres sets de Roboflow (la pieza es la foto; las malas de train y valid no
+          se usan) e imprime la regla de tamaño: si un set no la pasa, solo informa.
       python scripts/sellar.py verificar
           Revisa las huellas de todo lo sellado y que no sobre ni falte ningún archivo.
 """
@@ -17,15 +20,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from golillas import sello  # noqa: E402
 
 CARPETAS = {f"manta_{t}": (sello.PUBLICO / sello.MANTA, [f"mechanics/{t}"]) for t in sello.MANTA_TIPOS}
+CARPETAS |= {n: (sello.PUBLICO / n, None) for n in sello.ROBOFLOW}  # las malas de train y valid no se sellan
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("orden", choices=("manta", "verificar"))
+    p.add_argument("orden", choices=("manta", "roboflow", "verificar"))
     a = p.parse_args()
     if a.orden == "manta":
         for t in sello.MANTA_TIPOS:
             print(f"manta_{t}:", sello.sellar_manta(t))
+    if a.orden == "roboflow":
+        for n in sello.ROBOFLOW:
+            regla = sello.regla_tamano(sello.piezas_roboflow(n))
+            print(f"{n}: regla de tamaño {regla}; sello {sello.sellar_roboflow(n)}")
     for c, (raiz, carpetas) in CARPETAS.items():
         if not (sello.SELLOS / c).exists():
             continue
