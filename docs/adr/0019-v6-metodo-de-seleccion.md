@@ -60,10 +60,37 @@ Lee `resultados/e13_metodos_puntajes.csv` y `e13_metodos.csv`. No usa GPU. Escri
 
 Probado con los resultados del humo (Kaggle y Edge Impulse, 40 piezas por clase): el PatchCore propio queda solo en el frente, porque es el único que cumple los 100 ms y los demás no se distinguen de él en detección ni en falsas. Los 5 pares que lo contienen se podan sin probarse. Ni sin tope de latencia la unión alcanza en Edge Impulse: hay 3 malas que todos pierden. Pruebas: `tests/test_combinaciones.py`.
 
-## Candidatos de la v6 (solo informan en MANTA)
-1. **Fusión de la clásica con la IA.** La clásica cabe en 13 ms y mide forma; la IA ve la superficie. Se revisa primero si pierden las mismas malas.
-2. **Clásica de superficie.** Una plantilla dorada (la golilla buena promedio, alineada), más color y textura, para que la clásica vea los defectos de superficie y no solo los de forma.
-3. **Ensamble de varias IA**, con la cota del oráculo y la latencia en serie como filtros previos.
+## Candidatos de la v6 (todos solo informan en MANTA)
+El [catastro](../estado-del-arte.md#8-lo-que-e13-no-compara-catastro-de-la-v6-por-familia-28-nov-2026) pasó por las etapas 2 y 3 del embudo todo lo que trae anomalib 2.7.1 y la clásica que falta. Quedan estos:
+
+1. **Clásica de superficie:** color en HSV o Lab, textura (GLCM, LBP y Gabor), top-hat y black-hat, y una plantilla dorada con modelo de variación (media y desviación por píxel, tras alinear). Se combina con los rasgos de forma mediante un clasificador de una clase (SVM de una clase, isolation forest, LOF, GMM o Mahalanobis).
+2. **IA de familias que e13 no tiene:** FastFlow (flujos), STFPM (maestro-alumno), DFKDE y DFM (densidad), DRAEM (anomalías sintéticas, sin subir DTD) y GANomaly y FRE (reconstrucción). Su latencia está por medir.
+3. **Los mismos métodos, optimizados:** exportados a OpenVINO u ONNX y cuantizados a INT8, con la licencia de cada herramienta verificada antes.
+4. **Combinaciones:** fusión o cascada de la clásica con la IA, y ensambles de IA, con la latencia por media y p99.
+
+Quedan fuera, con la etapa que los saca:
+- **Etapa 2, licencias:** CS-Flow, U-Flow y CFA (el código original no declara licencia o es AGPL), EfficientAD y DSR (pesos sin licencia), RAD y SuperADD (DINOv3), y AnomalyVFM y VLM-AD.
+- **Etapa 3, cota de latencia:** los métodos con WRN-50 o con un ViT-B o mayor.
+
+## Estadística de la prueba sellada nueva
+- **Cuántas malas hacen falta: 149 o más por tipo.** Con 149 malas y ninguna perdida, la no detección queda bajo 2 % con 95 % de confianza (1 − 0,05^(1/149) ≤ 0,02; el mismo cálculo del ADR 0017). MANTA trae 72 y 74, y por eso e13 decide con el criterio puntual del AIAG y no con una prueba de hipótesis. Si la v6 quiere probar con confianza, como pide la VDI 2632-3.1, necesita un set de ese tamaño.
+- **Corrección por comparaciones múltiples, si llegan 2 o 3 finalistas:** el método de Holm, que controla la probabilidad de aprobar por suerte a alguno de los finalistas sin ser tan conservador como Bonferroni (Holm, 1979, *Scandinavian Journal of Statistics* 6(2); **no verificado** en la fuente). Con un solo finalista no hace falta.
+
+## Combinaciones que entran al embudo
+| Tipo | Ejemplo | Cómo se poda |
+|---|---|---|
+| Clásica con clásica | Forma (P1–P6) más superficie (color, textura, plantilla dorada) | Licencias (OpenCV, scikit-image y scikit-learn), cota de latencia y dominancia |
+| Clásica con IA, fusión de puntajes | Puntaje de forma más puntaje de PatchCore, cada uno normalizado por su calibración | Latencia en serie y solapamiento de malas perdidas |
+| Clásica con IA, cascada | La clásica juzga primero; la IA mira solo las piezas en que la clásica duda | Latencia con la regla de abajo y cota del oráculo de la regla «o» |
+| IA con IA (ensamble) | Unión de dos métodos de familias distintas | Latencia en serie y cota del oráculo |
+
+### Cómo se mide la latencia de una combinación (regla de la v6)
+En e13 cada método tarda casi lo mismo en cada pieza, así que su mediana basta. Una cascada no: la mayoría de las piezas sale en 13 ms, y unas pocas tardan lo que tarda la IA. La mediana escondería la rama lenta. Por eso, desde la v6 la latencia se exige en dos partes, cada una con su fuente:
+
+- **Ritmo: media ≤ 100 ms por pieza.** Es la referencia de fabricante de 600 piezas por minuto ([ADR 0017](0017-n0-v2-estado-del-arte.md)). Con un solo inspector y una cola, el ritmo lo fija el tiempo medio: si es mayor que el tiempo entre piezas, la cola crece sin fin.
+- **Plazo: p99 ≤ el tiempo que la pieza tarda de la cámara a la boquilla**, contando la espera en la cola. Ese tiempo es 250 mm dividido por la velocidad de la cinta, menos la captura (5 ms) y la válvula (10 ms) ([ADR 0012](0012-p7-linea.md)). A 600 piezas por minuto, la cinta va a ≈ 850 mm/s (interpolando la tabla del ADR 0012), así que el plazo es de ≈ 280 ms (estimación; se mide con `golillas/linea.py`). El p99 sale del criterio del mismo ADR: el 99 % de las malas marcadas tiene que salir de la cinta, así que a lo más el 1 % puede llegar tarde.
+
+Para un método solo, de tiempo casi constante, las dos partes equivalen a la mediana de e13. Ni e13 ni su decisión cambian.
 
 ## Lo que falta para que la v6 decida
 - **Datos de desarrollo con malas del mismo tipo de golilla.** MANTA no trae malas fuera de su prueba. Sin ellas, la etapa 4 solo se puede correr en los sets que informan (Kaggle, Edge Impulse y Roboflow), que son otros montajes.

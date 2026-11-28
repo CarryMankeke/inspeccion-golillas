@@ -115,4 +115,70 @@ Ninguna norma fija la latencia. La referencia es el ritmo de las clasificadoras 
 ## 7. Qué entra en la comparación
 Entra lo que se puede ajustar solo con buenas, corre en este servidor y tiene licencias leídas que dejan publicar resultados: la clásica propia, PatchCore (propio y de anomalib), PaDiM, AnomalyDINO, Dinomaly y WinCLIP. EfficientAD queda fuera porque los pesos de su maestro no declaran licencia. Los servicios comerciales quedan fuera de esta versión. Las golillas encimadas van en el [ADR 0018](adr/0018-p0-alimentacion-encimadas.md). La lista, el protocolo y el criterio están en el [ADR 0017](adr/0017-n0-v2-estado-del-arte.md).
 
+## 8. Lo que e13 no compara: catastro de la v6 por familia (28 nov 2026)
+**¿e13 compara todo lo que la clásica y la IA permiten bajo estas reglas? No.** e13 es una muestra fija de 8 métodos, elegida antes de bajar los datos: uno por familia de IA que entonces se conocía, y la clásica de forma. Esta sección revisa todo lo que trae anomalib 2.7.1 (33 modelos de imagen, etiqueta `lib/v2.7.1`) y la clásica que falta, y pasa cada familia por el embudo del [ADR 0019](adr/0019-v6-metodo-de-seleccion.md). Fuentes: el código de anomalib en esa etiqueta, el LICENSE de cada repo original y la ficha de cada peso, leídos el 28 nov 2026. Lo que no cargó va marcado.
+
+### Regla pareja de licencias (desde la v6)
+Antes, el criterio fue disparejo. A EfficientAD se le restó que Imagenette viene de ImageNet, que es de uso no comercial, pero PatchCore y PaDiM también usan pesos entrenados en ImageNet, y DINOv2 y CLIP se entrenaron en LVD-142M y LAION-400M. La regla nueva es una sola:
+
+> **Un método entra si su código y sus pesos declaran, cada uno, una licencia que permita redistribuir y publicar resultados (permisiva o copyleft compatible). Un peso sin licencia declarada no entra, aunque el código sea permisivo. Los datos de preentrenamiento no excluyen por sí solos: se anota su licencia, y una nota marca lo que impediría el uso por un cliente comercial.**
+
+Con la regla pareja, **ninguno de los 8 de e13 sale**, y **EfficientAD sigue fuera**, ahora por una sola razón: el zip de su maestro en el release de anomalib no declara licencia. Imagenette es Apache-2.0, pero sus imágenes son de ImageNet, y eso queda solo como nota. **Nota para un cliente comercial, que vale para casi todos:** los pesos de timm y torchvision declaran Apache-2.0 o BSD-3, pero se entrenaron en ImageNet-1k, cuyos términos son de uso no comercial. Ninguna fuente primaria resuelve si esos términos alcanzan al modelo (**no verificado**), y lo tiene que revisar el cliente. DINOv2 se entrenó en LVD-142M, cuya licencia no está declarada. CLIP se entrenó en LAION-400M: sus metadatos son CC BY 4.0, pero cada imagen conserva el copyright de su dueño.
+
+**MANTA** es CC BY 4.0 en figshare y CC BY-NC-SA 4.0 en la página del proyecto (las dos confirmadas). Se respeta la más restrictiva: sirve para este repo abierto y sin fines comerciales, pero **no para un cliente comercial**.
+
+### IA: familias que faltan
+Etapas del embudo: **2** = licencias, **3** = cota de latencia. La cota en la CPU del servidor viene de la [medición previa del ADR 0017](adr/0017-n0-v2-estado-del-arte.md#medición-previa-de-latencia-28-nov-2026-no-decide) cuando el método usa la misma red base. Por ejemplo, la Wide ResNet-50 hasta layer3 a 256 px tarda sola 103 ms por vista, o sea, 541 ms por pieza de 5 vistas. En la v6 cada método pasará por `scripts/latencia_cota.py`.
+
+| Familia | Métodos (clase en anomalib 2.7.1) | Código · pesos · datos | ¿Malas? | v6 | Etapa que lo saca y por qué |
+|---|---|---|---|---|---|
+| Flujos normalizantes | FastFlow (`Fastflow`) | Apache-2.0 ([original](https://github.com/gathierry/FastFlow/blob/master/LICENSE)) · ResNet-18 de timm, Apache-2.0 · ImageNet-1k | No | **Entra** | Pasa la 2. Su red base, la ResNet-18, cabe (13 ms por vista); el flujo, por medir |
+| | CFlow (`Cflow`) | BSD-3 ([original](https://github.com/gudovskiyd/cflow-ad/blob/master/LICENSE)) · WRN-50 de timm, Apache-2.0 · ImageNet-1k | No | Sale | 3: su red base es la WRN-50 (≥ 541 ms por pieza) |
+| | CS-Flow (`Csflow`) | El [original](https://github.com/marco-rudolph/cs-flow) no trae LICENSE; anomalib dice MIT · EfficientNet-B5 de torchvision | No | Sale | 2: la licencia del original no está declarada (**no verificado** si anomalib copia su código) |
+| | U-Flow (`Uflow`) | El [original](https://github.com/mtailanian/uflow) es AGPL-3.0; el port de anomalib dice Apache-2.0 sin citarlo · dos CaiT de timm, Apache-2.0 | No | Sale | 2: procedencia dudosa (**no verificado** si el port deriva del código AGPL); además, 448 px fijos con dos transformers (3) |
+| Maestro-alumno | STFPM (`Stfpm`) | Apache-2.0 (anomalib); el código de los autores sería GPL-3.0 (**no verificado** que anomalib derive de él) · ResNet-18 de timm, Apache-2.0 | No | **Entra** | Pasa la 2 con nota. Corre el maestro y el alumno, dos ResNet-18 (≈ 2 × 13 ms por vista): por medir |
+| | Reverse Distillation (`ReverseDistillation`) | MIT ([original](https://github.com/hq-deng/RD4AD/blob/main/LICENSE)) · WRN-50 · ImageNet-1k | No | Sale | 3: WRN-50. Su paper mide 0,31 s por imagen en una CPU i7 |
+| | EfficientAD (`EfficientAd`) | Apache-2.0 · el maestro, sin licencia declarada · ImageNet + Imagenette | No | Sale | 2: pesos sin licencia |
+| | UniNet (`UniNet`), L2BT (`L2BT`) | MIT o Apache-2.0 · WRN-50 de torchvision o DINOv2 ViT-B de timm | No (UniNet admite malas) | Sale | 3: WRN-50 (UniNet); ViT-B (L2BT, por medir, pero el ViT-S ya tarda 61 ms por vista) |
+| Densidad | DFKDE (`Dfkde`) | Apache-2.0 (anomalib; sin repo del paper) · ResNet-18 de timm | No | **Entra** | Pasa la 2. No entrena: ResNet-18 hasta layer4 + PCA + KDE; por medir |
+| | DFM (`Dfm`) | Apache-2.0 · ResNet-50 de timm | No | **Entra** | Pasa la 2. No entrena; la ResNet-50 hasta layer3, por medir |
+| | CFA (`Cfa`) | El [original](https://github.com/sungwool/CFA_for_anomaly_localization) no trae LICENSE · WRN-50 de torchvision | No | Sale | 2 (licencia del original) y 3 (WRN-50) |
+| Anomalías sintéticas | DRAEM (`Draem`) | MIT ([original](https://github.com/VitjanZ/DRAEM/blob/main/LICENSE)) · U-Net propia, sin pesos externos · texturas DTD, que Oxford ofrece «for research purposes», sin licencia | No | **Entra** | Pasa la 2 con nota: DTD no se sube al repo y no sirve para un cliente comercial. Dos U-Net: por medir |
+| | DSR (`Dsr`) | Apache-2.0 · el VQ-VAE preentrenado no declara licencia | No | Sale | 2: pesos sin licencia |
+| | SuperSimpleNet (`Supersimplenet`), GLASS (`Glass`), SimpleNet (no está en 2.7.1) | MIT · WRN-50 de timm o torchvision · GLASS corre sin DTD | No (SuperSimpleNet admite malas) | Sale | 3: WRN-50 |
+| Reconstrucción | GANomaly (`Ganomaly`) | MIT ([original](https://github.com/samet-akcay/ganomaly/blob/master/LICENSE)) · DCGAN propio, sin pesos externos | No | **Entra** | Pasa la 2. Red chica sin preentrenamiento: por medir |
+| | FRE (`Fre`) | Apache-2.0 · ResNet-50 de timm | No | **Entra** | Pasa la 2. ResNet-50 hasta layer3 + un autocodificador lineal: por medir |
+| Memoria y DINO | MH-PatchCore (`MHPatchcore`) | MIT · WRN-50 | No | Sale | 3: WRN-50; además, repite PatchCore |
+| | INP-Former, FoundAD, GeneralAD | MIT · DINOv2 ViT-B o ViT-L de timm, Apache-2.0 · LVD-142M | No | Sale | 3: ViT-B a 392 px, la red base de Dinomaly, ya tarda 519 ms por vista; FoundAD y GeneralAD van a 518 px |
+| | RAD (`Rad`), SuperADD (`SuperADD`) | Apache-2.0 · DINOv3, con licencia propia de Meta (no cargó) | No | Sale | 2: licencia de DINOv3, como en el ADR 0017 |
+| Cero disparos y lenguaje | AnomalyVFM (`AnomalyVFM`) | El original no trae LICENSE; los pesos en Hugging Face no declaran licencia | No | Sale | 2 |
+| | VLM-AD (`VlmAd`) | Apache-2.0 · por defecto `gpt-4o-mini` por la API de OpenAI (manda las fotos a un tercero), o LLaVA local | No | Sale | 2 y 3: un servicio externo no se puede publicar ni auditar, y un LLaVA de 7.000 millones de parámetros no cabe en 100 ms |
+
+**Lo que queda para la v6 por el lado de la IA:** FastFlow, STFPM, DFKDE, DFM, DRAEM, GANomaly y FRE. Todos se ajustan solo con buenas. Su latencia está **por medir** en la CPU del servidor con `scripts/latencia_cota.py`, después de e13.
+
+Ojo con un dato de e13 que estas cotas no ven: el PatchCore propio y PaDiM tardaron 265 y 195 ms por pieza, aunque su red base sola tarda 65 y 79 ms. La búsqueda o el modelo que va después de la red base pesa tanto como ella. Por eso la v6 también mide los modelos optimizados (OpenVINO u ONNX, con INT8), para saber si los 100 ms son un problema del hardware o del modelo.
+
+### Clásica que falta
+Todo esto se puede hacer con OpenCV ([Apache-2.0](https://github.com/opencv/opencv/blob/4.x/LICENSE)), scikit-image ([BSD-3](https://github.com/scikit-image/scikit-image/blob/main/LICENSE.txt)), scikit-learn ([BSD-3](https://github.com/scikit-learn/scikit-learn/blob/main/COPYING)) y NumPy (BSD-3). Ninguna técnica depende de los módulos «nonfree» de opencv-contrib. Ninguna fuente publica tiempos para estas funciones, así que su latencia queda **por medir** en el i3-9100.
+
+| Técnica | Qué detecta | Implementación | Referencia | v6 |
+|---|---|---|---|---|
+| Color en HSV o Lab | Manchas, decoloración, pigmento fuera de tono | `cv2.cvtColor` + estadísticos por anillo | CIE (**no verificado**) | **Entra** |
+| Textura: GLCM (Haralick), LBP, Gabor | Rayas, rugosidad, poros | `skimage.feature.graycomatrix` y `local_binary_pattern`; `cv2.getGaborKernel` | Haralick et al. 1973; Ojala et al. 2002; Daugman 1985 (DOIs comprobados en Crossref) | **Entra** |
+| Morfología: top-hat y black-hat | Manchas claras u oscuras y rayas finas | `cv2.morphologyEx` | Serra 1982 (**no verificado**) | **Entra** |
+| Plantilla dorada y modelo de variación | Cualquier diferencia con la buena promedio, píxel a píxel | Propia: alinear con `cv2.findTransformECC` o `cv2.phaseCorrelate`, luego media y desviación por píxel | Evangelidis y Psarakis 2008 (ECC); el «variation model» de HALCON (solo se leyeron resúmenes de su documentación) | **Entra** |
+| Clasificadores de una clase | Combinan los rasgos de forma y de superficie | `OneClassSVM`, `IsolationForest`, `LocalOutlierFactor(novelty=True)`, `GaussianMixture`, `EllipticEnvelope` de scikit-learn | Schölkopf et al. 2001; Liu et al. 2008; Breunig et al. 2000 (DOIs comprobados) | **Entra** |
+| Medición en mm con tolerancias ISO 7089 / ISO 4759-3 | Golillas fuera de medida | `cv2.calibrateCamera` con un patrón | Zhang 2000 (DOI comprobado) | No aplica a MANTA: su página no menciona calibración ni escala (figshare no revisado). Queda para fotos propias o una planta |
+
+### Combinaciones
+Las combinaciones (clásica con clásica, clásica con IA en fusión o en cascada, e IA con IA) entran al mismo embudo. Desde la v6, su latencia se exige con la media y el p99, no con la mediana ([ADR 0019](adr/0019-v6-metodo-de-seleccion.md)).
+
+### Lo que no se verificó
+- Si los términos de ImageNet alcanzan a los pesos derivados.
+- Si los ports de U-Flow, STFPM y CS-Flow derivan del código original.
+- La licencia de DINOv3, RADIO y FLUX.
+- Los tiempos de casi todos los métodos nuevos.
+- La documentación de OpenCV (dio 403).
+- Si MANTA trae calibración en figshare.
+
 Volver al [índice](README.md).

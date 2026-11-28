@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "Si usas este repo, cítalo así (créditos de métodos y datos en docs/creditos.md)."
+title: "Inspección de golillas con visión artificial: visión clásica contra IA con requisitos de la industria"
+type: software
+authors:
+  - family-names: "Soto Villegas"
+    given-names: "Camilo"
+repository-code: "https://github.com/CarryMankeke/inspeccion-golillas"
+license: MIT
+keywords:
+  - visión artificial
+  - detección de anomalías
+  - inspección industrial
+  - golillas
+  - umbral conformal
+  - AIAG MSA
+abstract: >-
+  Inspector de golillas en una cinta transportadora que se calibra por tipo de
+  golilla solo con piezas buenas. Compara la visión clásica con métodos de IA
+  de detección de anomalías (PatchCore, PaDiM, AnomalyDINO, Dinomaly y WinCLIP,
+  de anomalib) con requisitos tomados de normas y referencias de la industria,
+  una prueba sellada y una sola corrida.
+references:
+  - type: conference-paper
+    title: "MANTA: A Large-Scale Multi-View and Visual-Text Anomaly Detection Dataset for Tiny Objects"
+    authors:
+      - family-names: "Fan"
+        given-names: "Lei"
+      - name: "et al."
+    year: 2025
+    collection-title: "CVPR 2025"
+    identifiers:
+      - type: url
+        value: "https://arxiv.org/abs/2412.04867"
+    license: CC-BY-NC-SA-4.0
+  - type: conference-paper
+    title: "Anomalib: A Deep Learning Library for Anomaly Detection"
+    authors:
+      - family-names: "Akcay"
+        given-names: "Samet"
+      - name: "et al."
+    year: 2022
+    collection-title: "ICIP 2022"
+    identifiers:
+      - type: url
+        value: "https://arxiv.org/abs/2202.08341"

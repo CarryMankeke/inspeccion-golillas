@@ -22,7 +22,7 @@ Reglas:
 - **Un valor sin justificación no se cambia en una corrida ya fijada.** Se marca y se resuelve en la versión siguiente, antes de ver su prueba. Así, los valores de e13 que no tienen justificación siguen como están, y la v6 los justifica o los cambia antes de su prueba sellada.
 
 ## Auditoría del 28 nov 2026
-[valores.md](../valores.md) revisa 48 valores (o grupos de constantes que comparten razón) del código y de los ADR, incluidos los 3 del [ADR 0019](0019-v6-metodo-de-seleccion.md). 15 están justificados, 17 tienen una razón débil (sin norma ni referencia) y 16 no tienen justificación. Los que más pesan en el resultado, y que la v6 tiene que justificar antes de su prueba:
+[valores.md](../valores.md) revisa 52 valores (o grupos de constantes que comparten razón) del código y de los ADR, incluidos los 7 del [ADR 0019](0019-v6-metodo-de-seleccion.md). 17 están justificados, 19 tienen una razón débil (sin norma ni referencia) y 16 no tienen justificación. Los que más pesan en el resultado, y que la v6 tiene que justificar antes de su prueba:
 
 1. El empate de 2 puntos de detección (con 72–74 malas, 1 pieza son ≈ 1,4 puntos).
 2. Las 50 piezas y 3 de calentamiento con que se mide la latencia.

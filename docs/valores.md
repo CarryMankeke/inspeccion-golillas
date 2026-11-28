@@ -54,6 +54,10 @@ Auditoría de solo lectura sobre el código y los ADR (repo en el commit e53bc3e
 | 46 | p < 0,05 (McNemar exacto, dos colas) para la dominancia | `scripts/combinaciones.py` | ADR 0019: prueba estándar para comparar dos clasificadores en el mismo conjunto (Dietterich, 1998, *Neural Computation* 10(7)); el 95 % es la confianza de los IC del ADR 0017 | paper | justificado |
 | 47 | Punto ROC con ≤ floor(5 % · buenas) falsas | `scripts/combinaciones.py` | ADR 0019: el criterio de falsas del AIAG (fila 5) | norma (secundaria) | justificado |
 | 48 | 1 a 3 finalistas en la prueba sellada | ADR 0019 | Sin razón todavía | sin justificación | para la v6 |
+| 49 | Latencia de una combinación: media ≤ 100 ms por pieza (ritmo) | ADR 0019, desde la v6 | 600 piezas/min de una clasificadora óptica de golillas (la misma fuente de la fila 7); con una cola, el ritmo lo fija la media | fabricante | justificado |
+| 50 | Latencia de una combinación: p99 ≤ plazo cámara→boquilla (≈ 280 ms a 600 piezas/min) | ADR 0019, desde la v6 | 250 mm, captura de 5 ms y válvula de 10 ms del ADR 0012; el p99 sale de su criterio (≥ 99 % de las malas marcadas fuera), que es propio; los ≈ 850 mm/s se interpolan de su tabla | convención propia | débil |
+| 51 | ≥ 149 malas por tipo en la prueba sellada nueva | ADR 0019 | 1 − 0,05^(1/n) ≤ 0,02 ⇒ n ≥ 149: no detección < 2 % con 95 % de confianza y ninguna falla (el cálculo del ADR 0017); la VDI 2632-3.1 decide con una prueba de hipótesis | razón estadística | justificado |
+| 52 | Corrección de Holm con 2 o 3 finalistas | ADR 0019 | Holm, 1979, *Scandinavian Journal of Statistics* 6(2): controla el error de familia sin ser tan conservador como Bonferroni; la cita no se leyó en la fuente | paper | débil |
 
 Constantes ignoradas por no afectar resultados: tamaños de figura, colores, fuentes, trozos de memoria (65.536), tolerancias numéricas (1e-12, 1e-9).
 

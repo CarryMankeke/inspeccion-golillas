@@ -6,7 +6,8 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 1. [Árbol de decisiones](arbol.md): el diseño completo en un diagrama, de lo general (N0) a cada técnica probada (N3).
 2. [Glosario](glosario.md): los términos técnicos en una línea cada uno.
 3. [Estado del arte](estado-del-arte.md): datasets, métodos, librerías y servicios para inspeccionar golillas, con sus licencias verificadas.
-4. Los registros de decisión (ADR), uno por decisión:
+4. [Créditos y citas](creditos.md): el paper, el código y la licencia de cada método y dataset; para citar el repo, [CITATION.cff](../CITATION.cff).
+5. Los registros de decisión (ADR), uno por decisión:
 
 | ADR | Decisión | Evidencia clave |
 |---|---|---|
@@ -29,7 +30,7 @@ Esta carpeta se lee en GitHub o se abre como bóveda de [Obsidian](https://obsid
 | [0017](adr/0017-n0-v2-estado-del-arte.md) | N0 v2 y N1 v5 · estado del arte: clásica contra IA en varios tipos de golilla (aceptada) | 8 métodos y 2 tipos de MANTA que deciden; requisitos del AIAG MSA y la VDI 2632-3, fijados antes de bajar los sets de prueba |
 | [0018](adr/0018-p0-alimentacion-encimadas.md) | P0 · alimentación y golillas encimadas, con una cámara lateral (propuesta) | catastro de alimentadores de la industria |
 | [0019](adr/0019-v6-metodo-de-seleccion.md) | v6 · el embudo: elegir métodos y combinaciones sin probarlas todas (propuesta) | dominancia con McNemar y cota del oráculo (`scripts/combinaciones.py`, solo informa en MANTA) |
-| [0020](adr/0020-regla-justificacion-de-valores.md) | Regla: cada valor lleva su justificación (aceptada) | [auditoría de 48 valores](valores.md) |
+| [0020](adr/0020-regla-justificacion-de-valores.md) | Regla: cada valor lleva su justificación (aceptada) | [auditoría de 52 valores](valores.md) |
 
 ## Cómo está escrito cada ADR
 Contexto → opciones → criterio (escrito en el script antes de ver el ranking) → tabla de resultados → decisión → revisiones, si el criterio o el código se corrigió. Cada gráfico sale de un script en `experimentos/`, y cada decisión queda también en `resultados/decisiones.json`.
